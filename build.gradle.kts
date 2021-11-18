@@ -21,6 +21,10 @@ dependencies {
     implementation(compose.desktop.currentOs)
 }
 
+sourceSets.main {
+    java.srcDirs("src/main/java", "src/main/kotlin")
+}
+
 tasks.test {
     useJUnitPlatform()
 }
@@ -31,7 +35,7 @@ tasks.withType<KotlinCompile>() {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "com.monadx.othello.Main"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Othello"

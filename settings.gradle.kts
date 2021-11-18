@@ -6,5 +6,5 @@ pluginManagement {
     }
     
 }
-rootProject.name = "Othello"
+rootProject.name = "com.monadx.othello"
 
