@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import com.monadx.othello.ui.controller.GamingController
 
 class GameBoard(val controller: GamingController) {
-    val cells = Array(8) { x -> GameBoardCell(controller, x) }
+    val cells = Array(8) { x -> GameBoardRow(controller, x) }
 
     fun pieceAt(x: Int, y: Int) = cells[x].pieceAt(y)
 

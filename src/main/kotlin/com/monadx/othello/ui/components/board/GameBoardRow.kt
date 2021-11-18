@@ -12,7 +12,7 @@ import com.monadx.othello.ui.Config.CELL_SIZE
 import com.monadx.othello.ui.Config.GAME_BOARD_BACKGROUND_COLOR
 import com.monadx.othello.ui.controller.GamingController
 
-class GameBoardCell(val controller: GamingController, val x: Int) {
+class GameBoardRow(val controller: GamingController, val x: Int) {
     val pieces = Array(8) { y -> GameBoardPiece(controller, x, y) }
 
     // access the piece object at the specified position
