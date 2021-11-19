@@ -99,24 +99,30 @@ fun GameScoreBar(state: GameStatusState) {
         Modifier
             .fillMaxWidth()
     ) {
-        Box(
-            Modifier
-                .weight(state.black.score.value.toFloat())
-                .height(STATUS_SCORE_BAR_HEIGHT)
-                .background(Color.Black)
-        )
-        Box(
-            Modifier
-                .weight((FULL_SCORE - state.black.score.value - state.white.score.value).toFloat())
-                .height(STATUS_SCORE_BAR_HEIGHT)
-                .background(Color.Transparent)
-        )
-        Box(
-            Modifier
-                .weight(state.white.score.value.toFloat())
-                .height(STATUS_SCORE_BAR_HEIGHT)
-                .background(Color.White)
-        )
+        if (state.black.score.value > 0) {
+            Box(
+                Modifier
+                    .weight(state.black.score.value.toFloat())
+                    .height(STATUS_SCORE_BAR_HEIGHT)
+                    .background(Color.Black)
+            )
+        }
+        if (FULL_SCORE > state.black.score.value + state.white.score.value) {
+            Box(
+                Modifier
+                    .weight((FULL_SCORE - state.black.score.value - state.white.score.value).toFloat())
+                    .height(STATUS_SCORE_BAR_HEIGHT)
+                    .background(Color.Transparent)
+            )
+        }
+        if (state.white.score.value > 0) {
+            Box(
+                Modifier
+                    .weight(state.white.score.value.toFloat())
+                    .height(STATUS_SCORE_BAR_HEIGHT)
+                    .background(Color.White)
+            )
+        }
     }
 }
 
