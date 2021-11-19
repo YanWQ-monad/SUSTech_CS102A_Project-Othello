@@ -15,10 +15,7 @@ abstract class GamingController: Controller() {
     abstract fun isTurn(): Boolean
 
     fun syncBoardColor() {
-        POSITION_LIST.forEach { coordinate ->
-            val x = coordinate.x
-            val y = coordinate.y
-
+        POSITION_LIST.forEach { (x, y) ->
             if (gameBoard.pieceAt(x, y).color.value != board.board[x][y]) {
                 gameBoard.pieceAt(x, y).color.value = board.board[x][y]
             }
@@ -27,8 +24,7 @@ abstract class GamingController: Controller() {
 
     fun setBoardPlaceable() {
         POSITION_LIST.forEach { coordinate ->
-            val x = coordinate.x
-            val y = coordinate.y
+            val (x, y) = coordinate
 
             gameBoard.pieceAt(x, y).canMove.value = board.checkPlaceable(coordinate)
         }
