@@ -14,8 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 import com.monadx.othello.chess.ChessColor
-import com.monadx.othello.ui.Config
 import com.monadx.othello.ui.Config.BLACK_CHESS_COLOR
+import com.monadx.othello.ui.Config.CELL_SIZE
+import com.monadx.othello.ui.Config.GAME_BOARD_BACKGROUND_COLOR
+import com.monadx.othello.ui.Config.MOVABLE_BORDER_COLOR
+import com.monadx.othello.ui.Config.PIECE_SIZE
 import com.monadx.othello.ui.Config.WHITE_CHESS_COLOR
 
 object BoardConfig {
@@ -66,8 +69,8 @@ fun GameBoardRow(
                 Modifier
                     // The border between the cells is 1 dp, thus, the width here is 0.5 dp
                     .border(BoardConfig.CELL_BORDER_WIDTH / 2, Color.Black)
-                    .size(Config.CELL_SIZE)
-                    .background(Config.GAME_BOARD_BACKGROUND_COLOR)
+                    .size(CELL_SIZE)
+                    .background(GAME_BOARD_BACKGROUND_COLOR)
             ) {
                 GameBoardPiece(cell, isTurn, onClick)
             }
@@ -82,13 +85,13 @@ fun GameBoardPiece(
     onClick: (Int, Int) -> Unit,
 ) {
     // to make the chess piece in the center
-    val offset = (Config.CELL_SIZE - Config.PIECE_SIZE) / 2
+    val offset = (CELL_SIZE - PIECE_SIZE) / 2
 
     // if the position can place a chess piece, show the hollow circle
     val borderModifier = if (piece.canMove.value) {
         Modifier.border(
             width = BoardConfig.PLACEABLE_BORDER_WIDTH,
-            color = Config.MOVABLE_BORDER_COLOR,
+            color = MOVABLE_BORDER_COLOR,
             shape = CircleShape,
         )
     } else {
@@ -103,7 +106,7 @@ fun GameBoardPiece(
     ) {
         Box(
             Modifier
-                .size(Config.PIECE_SIZE)
+                .size(PIECE_SIZE)
                 .background(piece.color.value.graphicsColor())
                 .clickable(
                     // enabled only if the position can place a chess piece, and now it is the user's turn
