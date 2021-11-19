@@ -18,6 +18,11 @@ import com.monadx.othello.ui.Config
 import com.monadx.othello.ui.Config.BLACK_CHESS_COLOR
 import com.monadx.othello.ui.Config.WHITE_CHESS_COLOR
 
+object BoardConfig {
+    val PLACEABLE_BORDER_WIDTH = 1.dp
+    val CELL_BORDER_WIDTH = 1.dp
+}
+
 class GameBoardState {
     val rows = Array(8) {
         x -> Array(8) { y -> Piece(x, y) }
@@ -60,7 +65,7 @@ fun GameBoardRow(
             Box (
                 Modifier
                     // The border between the cells is 1 dp, thus, the width here is 0.5 dp
-                    .border(0.5.dp, Color.Black)
+                    .border(BoardConfig.CELL_BORDER_WIDTH / 2, Color.Black)
                     .size(Config.CELL_SIZE)
                     .background(Config.GAME_BOARD_BACKGROUND_COLOR)
             ) {
@@ -82,7 +87,7 @@ fun GameBoardPiece(
     // if the position can place a chess piece, show the hollow circle
     val borderModifier = if (piece.canMove.value) {
         Modifier.border(
-            width = if (piece.canMove.value) 1.dp else 0.dp,
+            width = BoardConfig.PLACEABLE_BORDER_WIDTH,
             color = Config.MOVABLE_BORDER_COLOR,
             shape = CircleShape,
         )
