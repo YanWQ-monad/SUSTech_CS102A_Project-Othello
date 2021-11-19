@@ -17,6 +17,12 @@ abstract class GamingController: Controller() {
 
     abstract fun onClick(x: Int, y: Int)
 
+    fun syncAll() {
+        syncBoardColor()
+        syncStatus()
+        setBoardPlaceable()
+    }
+
     fun syncBoardColor() {
         POSITION_LIST.forEach { (x, y) ->
             if (gameBoard.at(x, y).color.value != game.board.board[x][y]) {

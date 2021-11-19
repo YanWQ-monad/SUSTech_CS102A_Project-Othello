@@ -10,6 +10,10 @@ public class Board {
 
     public Board() {
         board = new ChessColor[8][8];
+        reset();
+    }
+
+    public void reset() {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 board[x][y] = ChessColor.EMPTY;
@@ -19,6 +23,13 @@ public class Board {
         board[4][4] = ChessColor.WHITE;
         board[3][4] = ChessColor.BLACK;
         board[4][3] = ChessColor.BLACK;
+    }
+
+    public Board copy() {
+        Board clone = new Board();
+        clone.setBoard(board);
+        clone.hash = hash;
+        return clone;
     }
 
     // Checks whether the given color of the chess can place on the position
