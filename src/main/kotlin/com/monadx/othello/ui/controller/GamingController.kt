@@ -2,22 +2,19 @@ package com.monadx.othello.ui.controller
 
 import com.monadx.othello.chess.Board
 import com.monadx.othello.chess.Utils.POSITION_LIST
-import com.monadx.othello.ui.components.board.GameBoard
-import com.monadx.othello.ui.components.board.GameBoardPiece
+import com.monadx.othello.ui.components.board.GameBoardState
 
 abstract class GamingController: Controller() {
-    abstract val gameBoard: GameBoard
+    abstract val gameBoard: GameBoardState
 
     abstract val board: Board
 
-    abstract fun onClick(piece: GameBoardPiece, x: Int, y: Int)
-
-    abstract fun isTurn(): Boolean
+    abstract fun onClick(x: Int, y: Int)
 
     fun syncBoardColor() {
         POSITION_LIST.forEach { (x, y) ->
-            if (gameBoard.pieceAt(x, y).color.value != board.board[x][y]) {
-                gameBoard.pieceAt(x, y).color.value = board.board[x][y]
+            if (gameBoard.at(x, y).color.value != board.board[x][y]) {
+                gameBoard.at(x, y).color.value = board.board[x][y]
             }
         }
     }
@@ -26,7 +23,7 @@ abstract class GamingController: Controller() {
         POSITION_LIST.forEach { coordinate ->
             val (x, y) = coordinate
 
-            gameBoard.pieceAt(x, y).canMove.value = board.checkPlaceable(coordinate)
+            gameBoard.at(x, y).canMove.value = board.checkPlaceable(coordinate)
         }
     }
 }
