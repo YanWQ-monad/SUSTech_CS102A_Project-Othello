@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 
 import com.monadx.othello.chess.Board
 import com.monadx.othello.chess.Coordinate
+import com.monadx.othello.chess.Game
 import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.components.board.GameBoardState
 import com.monadx.othello.ui.components.board.GamePane
@@ -15,7 +16,7 @@ class VersusController: GamingController() {
 
     override val gameStatus = GameStatusState()
 
-    override val board = Board()
+    override val game = Game()
 
     init {
         super.syncBoardColor()
@@ -35,7 +36,7 @@ class VersusController: GamingController() {
     }
 
     override fun onClick(x: Int, y: Int) {
-        if (!board.place(Coordinate(x, y))) {
+        if (!game.place(Coordinate(x, y))) {
             return
         }
 

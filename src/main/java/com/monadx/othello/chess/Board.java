@@ -2,7 +2,6 @@ package com.monadx.othello.chess;
 
 public class Board {
     private final ChessColor[][] board;
-    private ChessColor currentPlayer;
 
     private Integer hash = null;
 
@@ -20,25 +19,23 @@ public class Board {
         board[4][4] = ChessColor.WHITE;
         board[3][4] = ChessColor.BLACK;
         board[4][3] = ChessColor.BLACK;
-
-        currentPlayer = ChessColor.BLACK;
     }
 
     // Checks whether the given color of the chess can place on the position
-    public boolean checkPlaceable(Coordinate coordinate) {
+    public boolean checkPlaceable(Coordinate coordinate, ChessColor color) {
         if (board[coordinate.x()][coordinate.y()] != ChessColor.EMPTY)
             return false;
 
         for (int k = 0; k < 8; k++) {
             int nx = coordinate.x() + DX[k], ny = coordinate.y() + DY[k];
-            if (!Utils.coordinateInside(nx, ny) || board[nx][ny] != currentPlayer.getOpposite())
+            if (!Utils.coordinateInside(nx, ny) || board[nx][ny] != color.getOpposite())
                 continue;
             while (true) {
                 nx += DX[k];
                 ny += DY[k];
                 if (!Utils.coordinateInside(nx, ny) || board[nx][ny] == ChessColor.EMPTY)
                     break;
-                if (board[nx][ny] == currentPlayer)
+                if (board[nx][ny] == color)
                     return true;
             }
         }
@@ -48,7 +45,7 @@ public class Board {
 
     // Place a chess on the position
     // Return true if the chess is placed successfully
-    public boolean place(Coordinate coordinate) {
+    public boolean place(Coordinate coordinate, ChessColor color) {
         if (board[coordinate.x()][coordinate.y()] != ChessColor.EMPTY)
             return false;
 
@@ -56,18 +53,18 @@ public class Board {
 
         for (int k = 0; k < 8; k++) {
             int nx = coordinate.x() + DX[k], ny = coordinate.y() + DY[k];
-            if (!Utils.coordinateInside(nx, ny) || board[nx][ny] != currentPlayer.getOpposite())
+            if (!Utils.coordinateInside(nx, ny) || board[nx][ny] != color.getOpposite())
                 continue;
             while (true) {
                 nx += DX[k];
                 ny += DY[k];
                 if (!Utils.coordinateInside(nx, ny) || board[nx][ny] == ChessColor.EMPTY)
                     break;
-                if (board[nx][ny] == currentPlayer) {
+                if (board[nx][ny] == color) {
                     while (nx != coordinate.x() || ny != coordinate.y()) {
                         nx -= DX[k];
                         ny -= DY[k];
-                        board[nx][ny] = currentPlayer;
+                        board[nx][ny] = color;
                     }
                     ok = true;
                     break;
@@ -77,7 +74,6 @@ public class Board {
 
         if (ok) {
             hash = null;
-            currentPlayer = currentPlayer.getOpposite();
         }
 
         return ok;
@@ -97,14 +93,6 @@ public class Board {
             hash = h;
         }
         return hash;
-    }
-
-    public ChessColor getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public void setCurrentPlayer(ChessColor currentPlayer) {
-        this.currentPlayer = currentPlayer;
     }
 
     public ChessColor[][] getBoard() {
