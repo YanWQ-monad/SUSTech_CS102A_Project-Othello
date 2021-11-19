@@ -17,6 +17,10 @@ abstract class GamingController: Controller() {
 
     abstract fun onClick(x: Int, y: Int)
 
+    abstract fun undo()
+
+    abstract fun restart()
+
     fun syncAll() {
         syncBoardColor()
         syncStatus()

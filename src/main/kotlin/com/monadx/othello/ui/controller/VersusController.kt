@@ -14,6 +14,7 @@ import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.components.board.GameBoardState
 import com.monadx.othello.ui.components.board.GamePane
 import com.monadx.othello.ui.components.board.GameStatusState
+import com.monadx.othello.ui.components.board.UniversalBoard
 
 class VersusController: GamingController() {
     override val gameBoard = GameBoardState()
@@ -29,27 +30,7 @@ class VersusController: GamingController() {
     @Composable
     override fun view(state: AppState) {
         MaterialTheme {
-            Column {
-                GamePane(
-                    gameBoard,
-                    gameStatus,
-                    true
-                ) { x, y -> onClick(x, y) }
-
-                Row {
-                    TextButton(
-                        onClick = { undo() }
-                    ) {
-                        Text("Undo")
-                    }
-
-                    TextButton(
-                        onClick = { restart() }
-                    ) {
-                        Text("Restart")
-                    }
-                }
-            }
+            UniversalBoard(this)
         }
     }
 
@@ -62,12 +43,12 @@ class VersusController: GamingController() {
         println("VersusController.onClick($x, $y)")
     }
 
-    fun undo() {
+    override fun undo() {
         game.undo()
         super.syncAll()
     }
 
-    fun restart() {
+    override fun restart() {
         game.reset()
         super.syncAll()
     }
