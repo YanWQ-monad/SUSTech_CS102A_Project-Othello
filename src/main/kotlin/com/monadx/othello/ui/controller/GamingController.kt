@@ -21,7 +21,7 @@ abstract class GamingController: Controller() {
 
     abstract fun restart()
 
-    fun syncAll() {
+    open fun syncAll() {
         syncBoardColor()
         syncStatus()
         setBoardPlaceable()

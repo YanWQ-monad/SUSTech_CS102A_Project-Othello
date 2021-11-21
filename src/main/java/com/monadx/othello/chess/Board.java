@@ -90,6 +90,17 @@ public class Board {
         return ok;
     }
 
+    public int getPlacedCount() {
+        int count = 0;
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                if (board[x][y] != ChessColor.EMPTY)
+                    count++;
+            }
+        }
+        return count;
+    }
+
     @Override
     public int hashCode() {
         if (hash == null) {

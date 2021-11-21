@@ -17,6 +17,9 @@ class MenuController: Controller() {
                 Button(onClick = { state.setStage(Stage.VERSUS) }) {
                     Text("Versus Mode")
                 }
+                Button(onClick = { state.setStage(Stage.AI) }) {
+                    Text("AI Mode")
+                }
             }
         }
     }

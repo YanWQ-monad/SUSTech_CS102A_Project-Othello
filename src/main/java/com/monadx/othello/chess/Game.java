@@ -65,6 +65,10 @@ public class Game {
         status = snapshot.status();
     }
 
+    public int getPlacedCount() {
+        return board.getPlacedCount();
+    }
+
     private void nextTurn() {
         currentPlayer = currentPlayer.getOpposite();
 
