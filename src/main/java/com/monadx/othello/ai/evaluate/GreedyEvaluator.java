@@ -1,12 +1,13 @@
-package com.monadx.othello.ai;
+package com.monadx.othello.ai.evaluate;
 
 import com.monadx.othello.chess.Board;
 import com.monadx.othello.chess.ChessColor;
 
-public class Evaluator {
-    public Evaluator() {}
+public class GreedyEvaluator extends Evaluator {
+    public GreedyEvaluator() {}
 
-    public int evaluateColor(Board board, ChessColor color) {
+    @Override
+    public int evaluateColor(Board board, ChessColor color, int progress) {
         final ChessColor opposite = color.getOpposite();
         int value = 0;
         for (int x = 0; x < 8; x++)
@@ -20,12 +21,4 @@ public class Evaluator {
 
         return value;
     }
-
-    public Result evaluate(Board board) {
-        return new Result(
-                evaluateColor(board, ChessColor.BLACK),
-                evaluateColor(board, ChessColor.WHITE));
-    }
-
-    public record Result(int black, int white) {}
 }

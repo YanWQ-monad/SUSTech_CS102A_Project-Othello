@@ -1,27 +1,32 @@
 package com.monadx.othello.ai;
 
-import com.monadx.othello.chess.Coordinate;
+import com.monadx.othello.chess.ChessColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.monadx.othello.ai.evaluate.Evaluator;
+import com.monadx.othello.chess.Coordinate;
 
 public class Collector {
     private Coordinate best = null;
     private Evaluator.Result score = null;
 
-    private final int depth;
     private final Comparator comparator;
 
-    Collector(int depth, Comparator comparator) {
-        this.depth = depth;
+    Collector(Comparator comparator) {
         this.comparator = comparator;
     }
 
-    Collector(int depth) {
-        this(depth, Comparator.BLACK);
+    public static Collector fromChessColor(ChessColor color) {
+        return switch (color) {
+            case BLACK -> new Collector(Comparator.BLACK);
+            case WHITE -> new Collector(Comparator.WHITE);
+            case EMPTY -> null;
+        };
     }
 
     public Collector createNextLayer() {
-        return new Collector(depth + 1, comparator.getOpposite());
+        return new Collector(comparator.getOpposite());
     }
 
     public boolean tryUpdate(Coordinate coordinate, Evaluator.Result score) {
@@ -74,5 +79,3 @@ public class Collector {
         abstract Comparator getOpposite();
     }
 }
-
-

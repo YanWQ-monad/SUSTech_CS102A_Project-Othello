@@ -1,5 +1,6 @@
 package com.monadx.othello.ai;
 
+import com.monadx.othello.ai.evaluate.Evaluator;
 import com.monadx.othello.chess.Board;
 import com.monadx.othello.chess.ChessColor;
 import com.monadx.othello.chess.Coordinate;
@@ -11,7 +12,7 @@ public class Searcher {
         this.evaluator = evaluator;
     }
 
-    public Collector search(Board board, ChessColor color, Collector collector, Accounter accounter) {
+    public Collector search(Board board, ChessColor color, Collector collector, Accounter accounter, int progress) {
         Board new_board = board.copy();
 
         for (int x = 0; x < 8; x++) {
@@ -23,14 +24,19 @@ public class Searcher {
 
                 if (accounter.hasQuota()) {
                     Collector child_collector = search(
-                            new_board, color.getOpposite(), collector.createNextLayer(), accounter.nextLayer());
+                            new_board,
+                            color.getOpposite(),
+                            collector.createNextLayer(),
+                            accounter.nextLayer(),
+                            progress + 1);
+
                     collector.tryUpdate(coordinate, child_collector.getScore());
 //                    String space = new String(new char[2 - accounter.getQuota()]).replace("\0", " ");
 //                    System.out.printf(" %s %s: %d\n", space, coordinate, result);
                 } else {
                     collector.tryUpdate(
                             coordinate,
-                            evaluator.evaluate(new_board));
+                            evaluator.evaluate(new_board, progress));
                 }
 
                 new_board = board.copy(); // revert to original board
@@ -42,9 +48,9 @@ public class Searcher {
         return collector;
     }
 
-    public Collector search(Board board, ChessColor color, int depth) {
-        int maxQuota = (64 - 1) - depth;
-        return search(board, color, new Collector(depth), new Accounter(Math.min(maxQuota, 6)));
+    public Collector search(Board board, ChessColor color, int progress) {
+        int maxQuota = (64 - 1) - progress;
+        return search(board, color, Collector.fromChessColor(color), new Accounter(Math.min(maxQuota, 6)), progress);
     }
 
     private static class Accounter {
