@@ -4,7 +4,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import kotlin.concurrent.thread
 
-import com.monadx.othello.ai.evaluate.GreedyEvaluator
+import com.monadx.othello.ai.evaluate.HeuristicEvaluator
 import com.monadx.othello.ai.Searcher
 import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Coordinate
@@ -23,7 +23,7 @@ class AiController: GamingController() {
 
     var thread: Thread? = null
 
-    val searcher = Searcher(GreedyEvaluator())
+    val searcher = Searcher(HeuristicEvaluator())
 
     init {
         syncAll()

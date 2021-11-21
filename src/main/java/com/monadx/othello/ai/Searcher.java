@@ -50,7 +50,7 @@ public class Searcher {
 
     public Collector search(Board board, ChessColor color, int progress) {
         int maxQuota = (64 - 1) - progress;
-        return search(board, color, Collector.fromChessColor(color), new Accounter(Math.min(maxQuota, 6)), progress);
+        return search(board, color, Collector.fromChessColor(color), new Accounter(Math.min(maxQuota, 5)), progress);
     }
 
     private static class Accounter {
