@@ -31,6 +31,8 @@ object StatusConfig {
 class GameStatusState {
     val black = PlayerState()
     val white = PlayerState()
+
+    val placable = mutableStateOf(false)
 }
 
 class PlayerState {

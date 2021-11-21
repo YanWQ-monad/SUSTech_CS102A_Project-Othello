@@ -13,7 +13,6 @@ fun UniversalBoard(controller: GamingController) {
         GamePane(
             controller.gameBoard,
             controller.gameStatus,
-            true
         ) { x, y -> controller.onClick(x, y) }
 
         Row {

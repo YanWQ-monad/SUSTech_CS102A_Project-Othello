@@ -18,7 +18,6 @@ object PaneConfig {
 fun GamePane(
     board: GameBoardState,
     status: GameStatusState,
-    isTurn: Boolean,
     onClick: (Int, Int) -> Unit,
 ) {
     Column(
@@ -29,6 +28,6 @@ fun GamePane(
     ) {
         GameStatus(status)
         Spacer(Modifier.height(PaneConfig.PANE_DIVIDE))
-        GameBoard(board, isTurn, onClick)
+        GameBoard(board, status.placable.value, onClick)
     }
 }

@@ -25,6 +25,7 @@ class VersusController: GamingController() {
 
     init {
         super.syncAll()
+        gameStatus.placable.value = true
     }
 
     @Composable

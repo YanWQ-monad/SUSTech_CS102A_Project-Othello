@@ -51,24 +51,11 @@ abstract class GamingController: Controller() {
         gameStatus.white.score.value = white
 
         if (game.status == GameStatus.PLAYING) {
-            if (game.currentPlayer == ChessColor.BLACK) {
-                gameStatus.black.status.value = PlayerState.Status.PLAYING
-                gameStatus.white.status.value = PlayerState.Status.IDLE
-            } else {
-                gameStatus.black.status.value = PlayerState.Status.IDLE
-                gameStatus.white.status.value = PlayerState.Status.PLAYING
-            }
+            gameStatus.black.status.value = if (game.currentPlayer == ChessColor.BLACK) PlayerState.Status.PLAYING else PlayerState.Status.IDLE
+            gameStatus.white.status.value = if (game.currentPlayer == ChessColor.WHITE) PlayerState.Status.PLAYING else PlayerState.Status.IDLE
         } else {
-            if (game.winner == ChessColor.BLACK) {
-                gameStatus.black.status.value = PlayerState.Status.WIN
-                gameStatus.white.status.value = PlayerState.Status.IDLE
-            } else if (game.winner == ChessColor.WHITE) {
-                gameStatus.black.status.value = PlayerState.Status.IDLE
-                gameStatus.white.status.value = PlayerState.Status.WIN
-            } else {
-                gameStatus.black.status.value = PlayerState.Status.IDLE
-                gameStatus.white.status.value = PlayerState.Status.IDLE
-            }
+            gameStatus.black.status.value = if (game.winner == ChessColor.BLACK) PlayerState.Status.WIN else PlayerState.Status.IDLE
+            gameStatus.white.status.value = if (game.winner == ChessColor.WHITE) PlayerState.Status.WIN else PlayerState.Status.IDLE
         }
     }
 
