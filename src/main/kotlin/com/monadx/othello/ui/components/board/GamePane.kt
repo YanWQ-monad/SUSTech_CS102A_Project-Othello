@@ -14,10 +14,14 @@ object PaneConfig {
     val PANE_DIVIDE = 3.dp
 }
 
+class GameState {
+    val board = GameBoardState()
+    val status = GameStatusState()
+}
+
 @Composable
 fun GamePane(
-    board: GameBoardState,
-    status: GameStatusState,
+    state: GameState,
     onClick: (Int, Int) -> Unit,
 ) {
     Column(
@@ -26,8 +30,8 @@ fun GamePane(
             .padding(PaneConfig.PANE_PADDING)
             .width(CELL_SIZE * 8)
     ) {
-        GameStatus(status)
+        GameStatus(state.status)
         Spacer(Modifier.height(PaneConfig.PANE_DIVIDE))
-        GameBoard(board, status.placable.value, onClick)
+        GameBoard(state.board, state.status.placable.value, onClick)
     }
 }

@@ -1,31 +1,22 @@
 package com.monadx.othello.ui.controller
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 
-import com.monadx.othello.chess.Board
 import com.monadx.othello.chess.Coordinate
 import com.monadx.othello.chess.Game
 import com.monadx.othello.ui.AppState
-import com.monadx.othello.ui.components.board.GameBoardState
-import com.monadx.othello.ui.components.board.GamePane
-import com.monadx.othello.ui.components.board.GameStatusState
+import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.UniversalBoard
 
 class VersusController: GamingController() {
-    override val gameBoard = GameBoardState()
-
-    override val gameStatus = GameStatusState()
+    override val state = GameState()
 
     override val game = Game()
 
     init {
         super.syncAll()
-        gameStatus.placable.value = true
+        state.status.placable.value = true
     }
 
     @Composable

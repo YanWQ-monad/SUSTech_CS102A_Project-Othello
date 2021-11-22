@@ -4,14 +4,11 @@ import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Game
 import com.monadx.othello.chess.GameStatus
 import com.monadx.othello.chess.Utils.POSITION_LIST
-import com.monadx.othello.ui.components.board.GameBoardState
-import com.monadx.othello.ui.components.board.GameStatusState
+import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.PlayerState
 
 abstract class GamingController: Controller() {
-    abstract val gameBoard: GameBoardState
-
-    abstract val gameStatus: GameStatusState
+    abstract val state: GameState
 
     abstract val game: Game
 
@@ -29,8 +26,8 @@ abstract class GamingController: Controller() {
 
     fun syncBoardColor() {
         POSITION_LIST.forEach { (x, y) ->
-            if (gameBoard.at(x, y).color.value != game.board.board[x][y]) {
-                gameBoard.at(x, y).color.value = game.board.board[x][y]
+            if (state.board.at(x, y).color.value != game.board.board[x][y]) {
+                state.board.at(x, y).color.value = game.board.board[x][y]
             }
         }
     }
@@ -47,15 +44,15 @@ abstract class GamingController: Controller() {
             }
         }
 
-        gameStatus.black.score.value = black
-        gameStatus.white.score.value = white
+        state.status.black.score.value = black
+        state.status.white.score.value = white
 
         if (game.status == GameStatus.PLAYING) {
-            gameStatus.black.status.value = if (game.currentPlayer == ChessColor.BLACK) PlayerState.Status.PLAYING else PlayerState.Status.IDLE
-            gameStatus.white.status.value = if (game.currentPlayer == ChessColor.WHITE) PlayerState.Status.PLAYING else PlayerState.Status.IDLE
+            state.status.black.status.value = if (game.currentPlayer == ChessColor.BLACK) PlayerState.Status.PLAYING else PlayerState.Status.IDLE
+            state.status.white.status.value = if (game.currentPlayer == ChessColor.WHITE) PlayerState.Status.PLAYING else PlayerState.Status.IDLE
         } else {
-            gameStatus.black.status.value = if (game.winner == ChessColor.BLACK) PlayerState.Status.WIN else PlayerState.Status.IDLE
-            gameStatus.white.status.value = if (game.winner == ChessColor.WHITE) PlayerState.Status.WIN else PlayerState.Status.IDLE
+            state.status.black.status.value = if (game.winner == ChessColor.BLACK) PlayerState.Status.WIN else PlayerState.Status.IDLE
+            state.status.white.status.value = if (game.winner == ChessColor.WHITE) PlayerState.Status.WIN else PlayerState.Status.IDLE
         }
     }
 
@@ -63,7 +60,7 @@ abstract class GamingController: Controller() {
         POSITION_LIST.forEach { coordinate ->
             val (x, y) = coordinate
 
-            gameBoard.at(x, y).canMove.value = game.checkPlaceable(coordinate)
+            state.board.at(x, y).canMove.value = game.checkPlaceable(coordinate)
         }
     }
 }

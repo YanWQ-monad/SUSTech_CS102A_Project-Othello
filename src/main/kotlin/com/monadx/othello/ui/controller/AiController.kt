@@ -10,14 +10,11 @@ import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Coordinate
 import com.monadx.othello.chess.Game
 import com.monadx.othello.ui.AppState
-import com.monadx.othello.ui.components.board.GameBoardState
-import com.monadx.othello.ui.components.board.GameStatusState
+import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.UniversalBoard
 
 class AiController: GamingController() {
-    override val gameBoard = GameBoardState()
-
-    override val gameStatus = GameStatusState()
+    override val state = GameState()
 
     override val game = Game()
 
@@ -69,13 +66,13 @@ class AiController: GamingController() {
 
     override fun syncAll() {
         super.syncAll()
-        gameStatus.placable.value = (game.currentPlayer == ChessColor.BLACK)
+        state.status.placable.value = (game.currentPlayer == ChessColor.BLACK)
 
 //        val result = searcher.evaluator.evaluate(game.board)
 //        println("Current evaluate: $result")
 
 //        println("AiController.syncAll():")
-//        println("current player: " + game.currentPlayer + ", placable: " + gameStatus.placable.value)
+//        println("current player: " + game.currentPlayer + ", placable: " + state.status.placable.value)
     }
 
     override fun undo() {
