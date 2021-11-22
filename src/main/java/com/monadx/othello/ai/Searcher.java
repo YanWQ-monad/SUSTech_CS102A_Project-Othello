@@ -41,6 +41,24 @@ public class Searcher {
                         Comparator.comparing(move -> collector.getComparator().valueOf(move.score()))))
                 .collect(Collectors.toList());
 
+        if (moves.isEmpty()) {
+            Evaluator.Result result;
+
+            if (quota > 0) {
+                Collector child_collector = search(
+                        board,
+                        color.getOpposite(),
+                        collector.createNextLayer(),
+                        quota - 1,
+                        progress);
+                result = child_collector.getScore();
+            } else {
+                result = evaluator.evaluate(board, progress);
+            }
+
+            collector.tryUpdate(new Coordinate(-1, -1), evaluator.correctForfeit(board, progress, result, color));
+        }
+
         for (PossibleMove move : moves) {
             Board new_board = move.board();
 

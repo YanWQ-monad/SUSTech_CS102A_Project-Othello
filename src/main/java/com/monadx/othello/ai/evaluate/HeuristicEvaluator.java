@@ -16,6 +16,12 @@ public class HeuristicEvaluator extends Evaluator {
         return 100 * corner + 3 * mobility + disc;
     }
 
+    @Override
+    public Result correctForfeit(Board board, int progress, Result result, ChessColor color) {
+        return correctResult(result, color, -10000);
+    }
+
+
     int evalMobility(BoardExtends board, ChessColor color) {
         int myMobility = board.mobility(color);
         int opponentMobility = board.mobility(color.getOpposite());

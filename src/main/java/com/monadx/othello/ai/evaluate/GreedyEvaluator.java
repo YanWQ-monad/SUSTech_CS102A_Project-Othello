@@ -21,4 +21,10 @@ public class GreedyEvaluator extends Evaluator {
 
         return value;
     }
+
+    @Override
+
+    public Result correctForfeit(Board board, int progress, Result result, ChessColor color) {
+        return correctResult(result, color, 0);
+    }
 }
