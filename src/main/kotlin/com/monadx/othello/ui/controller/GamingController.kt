@@ -4,6 +4,10 @@ import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Game
 import com.monadx.othello.chess.GameStatus
 import com.monadx.othello.chess.Utils.POSITION_LIST
+import com.monadx.othello.save.RecordLoader
+import com.monadx.othello.save.RecordSaver
+import com.monadx.othello.save.SaveException
+import com.monadx.othello.save.FileChooser
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.PlayerState
 
@@ -61,6 +65,35 @@ abstract class GamingController: Controller() {
             val (x, y) = coordinate
 
             state.board.at(x, y).canMove.value = game.checkPlaceable(coordinate)
+        }
+    }
+
+    open fun save() {
+        val filename = FileChooser(FileChooser.Action.SAVE, ".dat").choose()
+        println(filename)
+        if (filename === null) {
+            return
+        }
+
+        val saver = RecordSaver(filename)
+        saver.save(game)
+    }
+
+    open fun load() {
+        val filename = FileChooser(FileChooser.Action.OPEN, ".dat").choose()
+        println(filename)
+        if (filename === null) {
+            return
+        }
+
+        val loader = RecordLoader(filename)
+        try {
+            val game = loader.load()
+            this.game.board.board = game.board.board
+            this.game.currentPlayer = game.currentPlayer
+            syncAll()
+        } catch (e: SaveException) {
+            println(e.message)
         }
     }
 }

@@ -108,7 +108,7 @@ public class Board {
             for (int i = 0; i < 8; i++) {
                 int row_hash = 0;
                 for (int j = 0; j < 8; j++) {
-                    row_hash = row_hash * 3 + board[i][j].hashCode();
+                    row_hash = row_hash * 3 + board[i][j].customHashcode();
                 }
                 h = h * 6151 + (h >> 20) + row_hash;
             }

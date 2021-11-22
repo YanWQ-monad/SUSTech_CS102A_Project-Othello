@@ -28,6 +28,18 @@ fun UniversalBoard(controller: GamingController) {
             ) {
                 Text("Restart")
             }
+
+            TextButton(
+                onClick = { controller.save() }
+            ) {
+                Text("Save")
+            }
+
+            TextButton(
+                onClick = { controller.load() }
+            ) {
+                Text("Load")
+            }
         }
     }
 }

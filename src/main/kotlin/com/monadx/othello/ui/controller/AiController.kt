@@ -102,4 +102,19 @@ class AiController: GamingController() {
             nextStep()
         }
     }
+
+    override fun save() {
+        synchronized(game) {
+            super.save()
+        }
+    }
+
+    override fun load() {
+        synchronized(game) {
+            AiThread?.interrupt()
+            super.load()
+            syncAll()
+            nextStep()
+        }
+    }
 }
