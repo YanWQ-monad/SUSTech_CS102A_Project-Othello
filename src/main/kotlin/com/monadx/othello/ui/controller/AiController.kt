@@ -9,6 +9,7 @@ import com.monadx.othello.ai.Searcher
 import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Coordinate
 import com.monadx.othello.chess.Game
+import com.monadx.othello.chess.GameStatus
 import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.UniversalBoard
@@ -18,12 +19,13 @@ class AiController: GamingController() {
 
     override val game = Game()
 
-    var thread: Thread? = null
+    var AiThread: Thread? = null
 
     val searcher = Searcher(HeuristicEvaluator())
 
     init {
         syncAll()
+        nextStep()
     }
 
     @Composable
@@ -41,56 +43,63 @@ class AiController: GamingController() {
         syncAll()
         println("VersusController.onClick($x, $y)")
 
-        thread = thread {
-            val oldTime = System.currentTimeMillis()
+        nextStep()
+    }
 
-            val collector = searcher.search(game.board, game.currentPlayer, game.placedCount)
-            val move = collector.best
+    fun nextStep() {
+        if (game.status == GameStatus.ENDED) {
+            state.status.placable.value = false
+            return
+        }
 
-            val timePassBy = System.currentTimeMillis() - oldTime
-            if (timePassBy < 1000) {
-                Thread.sleep(1000 - timePassBy)
-            }
+        if (game.currentPlayer == ChessColor.BLACK) {
+            state.status.placable.value = true
+        } else {
+            state.status.placable.value = false
 
-            synchronized(game) {
-                if (thread!!.isInterrupted) {
-                    return@thread;
+            AiThread = thread {
+                val oldTime = System.currentTimeMillis()
+
+                val collector = searcher.search(game.board, game.currentPlayer, game.placedCount)
+                val move = collector.best
+
+                val timePassBy = System.currentTimeMillis() - oldTime
+                if (timePassBy < 1000) {
+                    Thread.sleep(1000 - timePassBy)
                 }
-                game.place(move)
-                println("  AI move: $move")
-                println("  expected value: ${collector.score}")
-                syncAll()
+
+                synchronized(game) {
+                    if (AiThread!!.isInterrupted) {
+                        return@thread;
+                    }
+                    game.place(move)
+                    println("  AI move: $move")
+                    println("  expected value: ${collector.score}")
+                    syncAll()
+                    nextStep()
+                }
             }
         }
     }
 
-    override fun syncAll() {
-        super.syncAll()
-        state.status.placable.value = (game.currentPlayer == ChessColor.BLACK)
-
-//        val result = searcher.evaluator.evaluate(game.board)
-//        println("Current evaluate: $result")
-
-//        println("AiController.syncAll():")
-//        println("current player: " + game.currentPlayer + ", placable: " + state.status.placable.value)
-    }
-
     override fun undo() {
         synchronized(game) {
-            thread?.interrupt()
+            AiThread?.interrupt()
             game.undo()
-            if (game.currentPlayer != ChessColor.BLACK) {
+            while (game.currentPlayer != ChessColor.BLACK) {
                 game.undo()
             }
             syncAll()
+            nextStep()
         }
     }
 
     override fun restart() {
         synchronized(game) {
-            thread?.interrupt()
+            AiThread?.interrupt()
             game.reset()
             syncAll()
+            nextStep()
         }
     }
 }
