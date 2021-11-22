@@ -1,12 +1,13 @@
 package com.monadx.othello.ai;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.monadx.othello.ai.evaluate.Evaluator;
 import com.monadx.othello.chess.Board;
 import com.monadx.othello.chess.ChessColor;
 import com.monadx.othello.chess.Coordinate;
+import com.monadx.othello.chess.Utils;
 
 public class Searcher {
     private final Evaluator evaluator;
@@ -27,35 +28,37 @@ public class Searcher {
             return collector;
         }
 
-        Board new_board = board.copy();
+        List<PossibleMove> moves = Arrays.stream(Utils.POSITION_LIST)
+                .filter(coordinate -> board.checkPlaceable(coordinate, color))
+                .map(coordinate -> {
+                    Board new_board = board.copy();
+                    new_board.place(coordinate, color);
+                    Evaluator.Result result = evaluator.evaluate(new_board, progress);
+                    return new PossibleMove(new_board, coordinate, result);
+                })
+                .sorted(Collections.reverseOrder(
+                        Comparator.comparing(move -> collector.getComparator().valueOf(move.score()))))
+                .collect(Collectors.toList());
 
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                Coordinate coordinate = new Coordinate(x, y);
-                if (!new_board.place(coordinate, color)) {
-                    continue;
-                }
+        for (PossibleMove move : moves) {
+            Board new_board = move.board();
 
-                Evaluator.Result result;
-                if (accounter.hasQuota()) {
-                    Collector child_collector = search(
-                            new_board,
-                            color.getOpposite(),
-                            collector.createNextLayer(),
-                            accounter.nextLayer(),
-                            progress + 1);
-                    result = child_collector.getScore();
-                } else {
-                    result = evaluator.evaluate(new_board, progress);
-                }
+            Evaluator.Result result;
+            if (accounter.hasQuota()) {
+                Collector child_collector = search(
+                        new_board,
+                        color.getOpposite(),
+                        collector.createNextLayer(),
+                        accounter.nextLayer(),
+                        progress + 1);
+                result = child_collector.getScore();
+            } else {
+                result = move.score();
+            }
 
-                collector.tryUpdate(coordinate, result);
-                if (collector.shouldCutOff()) {
-                    x = 8; // trick, to break the outer for
-                    break;
-                }
-
-                new_board = board.copy(); // revert to original board
+            collector.tryUpdate(move.coordinate(), result);
+            if (collector.shouldCutOff()) {
+                break;
             }
         }
 
@@ -91,4 +94,6 @@ public class Searcher {
             return quota;
         }
     }
+
+    private static record PossibleMove(Board board, Coordinate coordinate, Evaluator.Result score) {}
 }

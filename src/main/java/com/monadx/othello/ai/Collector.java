@@ -61,6 +61,10 @@ public class Collector {
         return alpha >= beta;
     }
 
+    public Comparator getComparator() {
+        return comparator;
+    }
+
     public Coordinate getBest() {
         return best;
     }
