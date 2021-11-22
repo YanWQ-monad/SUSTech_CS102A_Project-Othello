@@ -10,11 +10,22 @@ import com.monadx.othello.chess.Coordinate;
 public class Collector {
     private Coordinate best = null;
     private Evaluator.Result score = null;
+    private final Comparator originalComparator;
+
+    private int alpha;
+    private int beta;
 
     private final Comparator comparator;
 
-    Collector(Comparator comparator) {
+    Collector(Comparator comparator, Comparator originalComparator, int alpha, int beta) {
         this.comparator = comparator;
+        this.originalComparator = originalComparator;
+        this.alpha = alpha;
+        this.beta = beta;
+    }
+
+    Collector(Comparator comparator) {
+        this(comparator, comparator, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public static Collector fromChessColor(ChessColor color) {
@@ -26,17 +37,28 @@ public class Collector {
     }
 
     public Collector createNextLayer() {
-        return new Collector(comparator.getOpposite());
+        return new Collector(comparator.getOpposite(), originalComparator, alpha, beta);
     }
 
     public boolean tryUpdate(Coordinate coordinate, Evaluator.Result score) {
         if (comparator.isBetter(this.score, score)) {
             this.best = coordinate;
             this.score = score;
+
+            if (originalComparator == comparator) { // maximize
+                alpha = Math.max(alpha, originalComparator.valueOf(score));
+            } else {
+                beta = Math.min(beta, originalComparator.valueOf(score));
+            }
+
             return true;
         } else {
             return false;
         }
+    }
+
+    public boolean shouldCutOff() {
+        return alpha >= beta;
     }
 
     public Coordinate getBest() {

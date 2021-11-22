@@ -36,6 +36,7 @@ public class Searcher {
                     continue;
                 }
 
+                Evaluator.Result result;
                 if (accounter.hasQuota()) {
                     Collector child_collector = search(
                             new_board,
@@ -43,14 +44,15 @@ public class Searcher {
                             collector.createNextLayer(),
                             accounter.nextLayer(),
                             progress + 1);
-
-                    collector.tryUpdate(coordinate, child_collector.getScore());
-//                    String space = new String(new char[2 - accounter.getQuota()]).replace("\0", " ");
-//                    System.out.printf(" %s %s: %d\n", space, coordinate, result);
+                    result = child_collector.getScore();
                 } else {
-                    collector.tryUpdate(
-                            coordinate,
-                            evaluator.evaluate(new_board, progress));
+                    result = evaluator.evaluate(new_board, progress);
+                }
+
+                collector.tryUpdate(coordinate, result);
+                if (collector.shouldCutOff()) {
+                    x = 8; // trick, to break the outer for
+                    break;
                 }
 
                 new_board = board.copy(); // revert to original board
@@ -67,7 +69,7 @@ public class Searcher {
     public Collector search(Board board, ChessColor color, int progress) {
         hash = new HashMap<>();
         int maxQuota = (64 - 1) - progress;
-        return search(board, color, Collector.fromChessColor(color), new Accounter(Math.min(maxQuota, 5)), progress);
+        return search(board, color, Collector.fromChessColor(color), new Accounter(Math.min(maxQuota, 8)), progress);
     }
 
     private static class Accounter {
