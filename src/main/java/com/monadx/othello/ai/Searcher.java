@@ -11,13 +11,14 @@ import com.monadx.othello.chess.Utils;
 
 public class Searcher {
     private final Evaluator evaluator;
-    private Map<Integer, Evaluator.Result> hash;
+    private final Map<Integer, Evaluator.Result> hash;
 
     public Searcher(Evaluator evaluator) {
         this.evaluator = evaluator;
+        this.hash = new HashMap<>();
     }
 
-    public Collector search(Board board, ChessColor color, Collector collector, Accounter accounter, int progress) {
+    public Collector search(Board board, ChessColor color, Collector collector, int quota, int progress) {
         int hashCode = board.hashCode();
         if (hash.containsKey(hashCode)) {
             Evaluator.Result result = hash.get(hashCode);
@@ -44,12 +45,12 @@ public class Searcher {
             Board new_board = move.board();
 
             Evaluator.Result result;
-            if (accounter.hasQuota()) {
+            if (quota > 0) {
                 Collector child_collector = search(
                         new_board,
                         color.getOpposite(),
                         collector.createNextLayer(),
-                        accounter.nextLayer(),
+                        quota - 1,
                         progress + 1);
                 result = child_collector.getScore();
             } else {
@@ -70,29 +71,9 @@ public class Searcher {
     }
 
     public Collector search(Board board, ChessColor color, int progress) {
-        hash = new HashMap<>();
+        hash.clear();
         int maxQuota = (64 - 1) - progress;
-        return search(board, color, Collector.fromChessColor(color), new Accounter(Math.min(maxQuota, 8)), progress);
-    }
-
-    private static class Accounter {
-        int quota;
-
-        Accounter(int quota) {
-            this.quota = quota;
-        }
-
-        Accounter nextLayer() {
-            return new Accounter(quota - 1);
-        }
-
-        boolean hasQuota() {
-            return quota > 0;
-        }
-
-        int getQuota() {
-            return quota;
-        }
+        return search(board, color, Collector.fromChessColor(color), Math.min(maxQuota, 8), progress);
     }
 
     private static record PossibleMove(Board board, Coordinate coordinate, Evaluator.Result score) {}
