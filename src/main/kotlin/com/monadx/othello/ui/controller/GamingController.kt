@@ -89,8 +89,7 @@ abstract class GamingController: Controller() {
         val loader = RecordLoader(filename)
         try {
             val game = loader.load()
-            this.game.board.board = game.board.board
-            this.game.currentPlayer = game.currentPlayer
+            this.game.loadFrom(game)
             syncAll()
         } catch (e: SaveException) {
             println(e.message)

@@ -26,6 +26,17 @@ public class Game {
         snapshotList.clear();
     }
 
+    public void loadFrom(Game game) {
+        board.setBoard(game.board.getBoard());
+        currentPlayer = game.currentPlayer;
+        status = game.status;
+        winner = game.winner;
+        stepList.clear();
+        stepList.addAll(game.stepList);
+        snapshotList.clear();
+        snapshotList.addAll(game.snapshotList);
+    }
+
     // Checks whether the given color of the chess can place on the position
     public boolean checkPlaceable(Coordinate coordinate) {
         return status != GameStatus.ENDED && board.checkPlaceable(coordinate, currentPlayer);
@@ -84,6 +95,7 @@ public class Game {
             if (!placeable2) {
                 // If the opponent cannot make a move, then the game is ended
                 status = GameStatus.ENDED;
+                currentPlayer = null;
                 winner = calculateWinner();
             }
         }

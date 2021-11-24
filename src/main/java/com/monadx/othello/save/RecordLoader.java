@@ -40,6 +40,11 @@ public class RecordLoader {
             throw new SaveException(String.format("Invalid current player: %s, expected: %s", game.getCurrentPlayer(), record.currentPlayer()));
         }
 
+        GameStatus expectedStatus = record.currentPlayer() == null ? GameStatus.ENDED : GameStatus.PLAYING;
+        if (game.getStatus() != expectedStatus) {
+            throw new SaveException(String.format("Invalid game status: %s, expected: %s", game.getStatus(), expectedStatus));
+        }
+
         return game;
     }
 }

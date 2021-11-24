@@ -113,7 +113,6 @@ class AiController: GamingController() {
         synchronized(game) {
             AiThread?.interrupt()
             super.load()
-            syncAll()
             nextStep()
         }
     }
