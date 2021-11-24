@@ -1,10 +1,10 @@
 package com.monadx.othello.ai;
 
-import com.monadx.othello.chess.ChessColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.monadx.othello.ai.evaluate.Evaluator;
+import com.monadx.othello.chess.ChessColor;
 import com.monadx.othello.chess.Coordinate;
 
 public class Collector {

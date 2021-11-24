@@ -83,8 +83,6 @@ public class Searcher {
 
         hash.put(hashCode, collector.getScore());
 
-//        String space = new String(new char[2 - accounter.getQuota()]).replace("\0", " ");
-//        System.out.printf("%s best: %s: %d (%s)\n", space, collector.getBest(), collector.getScore(), color);
         return collector;
     }
 

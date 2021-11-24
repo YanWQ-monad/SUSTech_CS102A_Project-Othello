@@ -21,7 +21,6 @@ public class HeuristicEvaluator extends Evaluator {
         return correctResult(result, color, -10000);
     }
 
-
     int evalMobility(BoardExtends board, ChessColor color) {
         int myMobility = board.mobility(color);
         int opponentMobility = board.mobility(color.getOpposite());

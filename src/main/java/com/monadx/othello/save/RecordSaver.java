@@ -1,10 +1,10 @@
 package com.monadx.othello.save;
 
-import com.monadx.othello.chess.Game;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+
+import com.monadx.othello.chess.Game;
 
 public class RecordSaver {
     private final String fileName;
