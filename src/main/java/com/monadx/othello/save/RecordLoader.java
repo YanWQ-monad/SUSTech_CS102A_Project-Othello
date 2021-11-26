@@ -1,9 +1,8 @@
 package com.monadx.othello.save;
 
-
+import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 
 import com.monadx.othello.chess.*;
 
@@ -17,9 +16,9 @@ public class RecordLoader {
     public Game load() throws SaveException {
         GameRecord record;
         try {
-            ObjectInputStream stream = new ObjectInputStream(new FileInputStream(fileName));
-            record = (GameRecord) stream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+            DataInputStream stream = new DataInputStream(new FileInputStream(fileName));
+            record = GameRecord.deserialize(stream);
+        } catch (IOException e) {
             throw new SaveException(e.getMessage(), e);
         }
 

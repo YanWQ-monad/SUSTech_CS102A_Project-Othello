@@ -1,7 +1,9 @@
 package com.monadx.othello.save;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.monadx.othello.chess.ChessColor;
@@ -11,6 +13,31 @@ public record GameRecord(
         List<Step> stepList,
         int boardHash,
         ChessColor currentPlayer
-) implements Serializable {
-    @Serial private static final long serialVersionUID = 1L;
+) {
+    public static GameRecord deserialize(DataInput in) throws IOException {
+        int stepListSize = in.readChar();
+        List<Step> stepList = new ArrayList<>(stepListSize);
+
+        for (int i = 0; i < stepListSize; i++) {
+            stepList.add(Step.deserialize(in));
+        }
+
+        int boardHash = in.readInt();
+        ChessColor currentPlayer = NullHelper.deserializeNullable(in, ChessColor::deserialize);
+
+        return new GameRecord(stepList, boardHash, currentPlayer);
+    }
+
+    public void serialize(DataOutput out) throws IOException {
+        out.writeChar(stepList.size());
+
+        for (Step step : stepList) {
+            step.serialize(out);
+        }
+
+        out.writeInt(boardHash);
+
+        // Lambda can NOT be replaced with method reference since `currentPlayer` is nullable.
+        NullHelper.serializeNullable(out, currentPlayer, o -> currentPlayer.serialize(o));
+    }
 }

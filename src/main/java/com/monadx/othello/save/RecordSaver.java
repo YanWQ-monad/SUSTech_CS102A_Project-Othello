@@ -1,8 +1,8 @@
 package com.monadx.othello.save;
 
+import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import com.monadx.othello.chess.Game;
 
@@ -20,8 +20,8 @@ public class RecordSaver {
                 game.getCurrentPlayer());
 
         try {
-            ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(fileName));
-            stream.writeObject(record);
+            DataOutputStream stream = new DataOutputStream(new FileOutputStream(fileName));
+            record.serialize(stream);
         } catch (IOException e) {
             throw new SaveException(e.getMessage(), e);
         }
