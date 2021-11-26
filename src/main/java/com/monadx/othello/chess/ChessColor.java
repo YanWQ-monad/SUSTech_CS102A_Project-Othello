@@ -4,9 +4,15 @@ import java.io.Serial;
 import java.io.Serializable;
 
 public enum ChessColor implements Serializable {
-    EMPTY,
-    BLACK,
-    WHITE;
+    EMPTY(0),
+    BLACK(1),
+    WHITE(2);
+
+    private final int id;
+
+    ChessColor(int id) {
+        this.id = id;
+    }
 
     @Serial private static final long serialVersionUID = 1L;
 
@@ -18,11 +24,7 @@ public enum ChessColor implements Serializable {
         };
     }
 
-    public int customHashcode() {
-        return switch (this) {
-            case BLACK -> 0;
-            case WHITE -> 1;
-            case EMPTY -> 2;
-        };
+    public int getId() {
+        return id;
     }
 }

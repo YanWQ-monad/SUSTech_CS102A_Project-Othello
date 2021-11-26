@@ -34,19 +34,17 @@ public class FileChooser {
     }
 
     public enum Action {
-        SAVE {
-            @Override
-            int getDialogMode() {
-                return FileDialog.SAVE;
-            }
-        },
-        OPEN {
-            @Override
-            int getDialogMode() {
-                return FileDialog.LOAD;
-            }
-        };
+        SAVE(FileDialog.SAVE),
+        OPEN(FileDialog.LOAD);
 
-        abstract int getDialogMode();
+        private final int dialogMode;
+
+        Action(int dialogMode) {
+            this.dialogMode = dialogMode;
+        }
+
+        public int getDialogMode() {
+            return dialogMode;
+        }
     }
 }
