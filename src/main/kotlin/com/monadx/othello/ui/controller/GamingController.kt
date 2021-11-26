@@ -8,10 +8,11 @@ import com.monadx.othello.save.RecordLoader
 import com.monadx.othello.save.RecordSaver
 import com.monadx.othello.save.SaveException
 import com.monadx.othello.save.FileChooser
+import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.PlayerState
 
-abstract class GamingController: Controller() {
+abstract class GamingController(appState: AppState): Controller(appState) {
     abstract val state: GameState
 
     abstract val game: Game

@@ -14,7 +14,7 @@ import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.UniversalBoard
 
-class AiController: GamingController() {
+class AiController(appState: AppState): GamingController(appState) {
     override val state = GameState()
 
     override val game = Game()
@@ -29,7 +29,7 @@ class AiController: GamingController() {
     }
 
     @Composable
-    override fun view(state: AppState) {
+    override fun view() {
         MaterialTheme {
             UniversalBoard(this)
         }

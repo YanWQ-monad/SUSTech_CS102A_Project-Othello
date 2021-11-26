@@ -13,7 +13,7 @@ class App {
     fun start() {
         application {
             Window(onCloseRequest = ::exitApplication) {
-                state.getController().view(state)
+                state.getController().view()
             }
         }
     }
