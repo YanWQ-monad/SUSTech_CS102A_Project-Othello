@@ -39,16 +39,16 @@ public class Board {
 
         for (int k = 0; k < 8; k++) {
             int nx = coordinate.x() + DX[k], ny = coordinate.y() + DY[k];
-            if (!Utils.coordinateInside(nx, ny) || board[nx][ny] != color.getOpposite())
-                continue;
-            while (true) {
+            boolean ok = false;
+
+            while (Utils.coordinateInside(nx, ny) && board[nx][ny] == color.getOpposite()) {
                 nx += DX[k];
                 ny += DY[k];
-                if (!Utils.coordinateInside(nx, ny) || board[nx][ny] == ChessColor.EMPTY)
-                    break;
-                if (board[nx][ny] == color)
-                    return true;
+                ok = true;
             }
+
+            if (Utils.coordinateInside(nx, ny) && ok && board[nx][ny] == color)
+                return true;
         }
 
         return false;
@@ -57,29 +57,27 @@ public class Board {
     // Place a chess on the position
     // Return true if the chess is placed successfully
     public boolean place(Coordinate coordinate, ChessColor color) {
-        if (board[coordinate.x()][coordinate.y()] != ChessColor.EMPTY)
+        int x = coordinate.x(), y = coordinate.y();
+        if (board[x][y] != ChessColor.EMPTY)
             return false;
 
         boolean ok = false;
 
         for (int k = 0; k < 8; k++) {
-            int nx = coordinate.x() + DX[k], ny = coordinate.y() + DY[k];
-            if (!Utils.coordinateInside(nx, ny) || board[nx][ny] != color.getOpposite())
-                continue;
-            while (true) {
+            int nx = x + DX[k], ny = y + DY[k];
+            while (Utils.coordinateInside(nx, ny) && board[nx][ny] == color.getOpposite()) {
                 nx += DX[k];
                 ny += DY[k];
-                if (!Utils.coordinateInside(nx, ny) || board[nx][ny] == ChessColor.EMPTY)
-                    break;
-                if (board[nx][ny] == color) {
-                    while (nx != coordinate.x() || ny != coordinate.y()) {
-                        nx -= DX[k];
-                        ny -= DY[k];
-                        board[nx][ny] = color;
-                    }
-                    ok = true;
-                    break;
-                }
+            }
+
+            if (!Utils.coordinateInside(nx, ny) || board[nx][ny] != color)
+                continue;
+
+            ok = true;
+            while (nx != x || ny != y) {
+                nx -= DX[k];
+                ny -= DY[k];
+                board[nx][ny] = color;
             }
         }
 
