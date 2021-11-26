@@ -27,7 +27,7 @@ public class Game {
     }
 
     public void loadFrom(Game game) {
-        board.setBoard(game.board.getBoard());
+        board.loadFrom(game.board);
         currentPlayer = game.currentPlayer;
         status = game.status;
         winner = game.winner;
@@ -71,7 +71,7 @@ public class Game {
         stepList.remove(stepList.size() - 1);
         Snapshot snapshot = snapshotList.remove(snapshotList.size() - 1);
 
-        board.setBoard(snapshot.board().getBoard());
+        board.loadFrom(snapshot.board());
         currentPlayer = snapshot.currentPlayer();
         status = snapshot.status();
     }
