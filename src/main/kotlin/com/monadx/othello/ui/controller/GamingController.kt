@@ -2,7 +2,6 @@ package com.monadx.othello.ui.controller
 
 import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Game
-import com.monadx.othello.chess.GameStatus
 import com.monadx.othello.chess.Utils.POSITION_LIST
 import com.monadx.othello.save.RecordLoader
 import com.monadx.othello.save.RecordSaver
@@ -52,7 +51,7 @@ abstract class GamingController(appState: AppState): Controller(appState) {
         state.status.black.score.value = black
         state.status.white.score.value = white
 
-        if (game.status == GameStatus.PLAYING) {
+        if (game.status == Game.Status.PLAYING) {
             state.status.black.status.value = if (game.currentPlayer == ChessColor.BLACK) PlayerState.Status.PLAYING else PlayerState.Status.IDLE
             state.status.white.status.value = if (game.currentPlayer == ChessColor.WHITE) PlayerState.Status.PLAYING else PlayerState.Status.IDLE
         } else {

@@ -8,7 +8,7 @@ public class Game {
     private final Board board = new Board();
     private ChessColor currentPlayer = ChessColor.BLACK;
 
-    private GameStatus status = GameStatus.PLAYING;
+    private Status status = Status.PLAYING;
 
     // only set when the game is ended
     // if `winner` is null when the game is ended, it means it's a draw
@@ -20,7 +20,7 @@ public class Game {
     public void reset() {
         board.reset();
         currentPlayer = ChessColor.BLACK;
-        status = GameStatus.PLAYING;
+        status = Status.PLAYING;
         winner = null;
         stepList.clear();
         snapshotList.clear();
@@ -39,13 +39,13 @@ public class Game {
 
     // Checks whether the given color of the chess can place on the position
     public boolean checkPlaceable(Coordinate coordinate) {
-        return status != GameStatus.ENDED && board.checkPlaceable(coordinate, currentPlayer);
+        return status != Status.ENDED && board.checkPlaceable(coordinate, currentPlayer);
     }
 
     // Place a chess on the position
     // Return true if the chess is placed successfully
     public boolean place(Coordinate coordinate) {
-        assert status == GameStatus.PLAYING;
+        assert status == Status.PLAYING;
 
         snapshotList.add(new Snapshot(board.copy(), currentPlayer, status));
 
@@ -62,7 +62,7 @@ public class Game {
 
     // Undo the last step
     public void undo() {
-        assert status == GameStatus.PLAYING;
+        assert status == Status.PLAYING;
 
         if (stepList.size() == 0) {
             return;
@@ -94,7 +94,7 @@ public class Game {
                     .anyMatch(coordinate -> board.checkPlaceable(coordinate, currentPlayer));
             if (!placeable2) {
                 // If the opponent cannot make a move, then the game is ended
-                status = GameStatus.ENDED;
+                status = Status.ENDED;
                 currentPlayer = null;
                 winner = calculateWinner();
             }
@@ -102,7 +102,7 @@ public class Game {
     }
 
     private ChessColor calculateWinner() {
-        assert status == GameStatus.ENDED;
+        assert status == Status.ENDED;
         int black = 0, white = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -140,11 +140,16 @@ public class Game {
         return winner;
     }
 
-    public GameStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
     public List<Step> getStepList() {
         return stepList;
+    }
+
+    public enum Status {
+        PLAYING,
+        ENDED,
     }
 }

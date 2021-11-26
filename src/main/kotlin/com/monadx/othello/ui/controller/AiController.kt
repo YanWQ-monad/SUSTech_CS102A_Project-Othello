@@ -9,7 +9,6 @@ import com.monadx.othello.ai.Searcher
 import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Coordinate
 import com.monadx.othello.chess.Game
-import com.monadx.othello.chess.GameStatus
 import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.UniversalBoard
@@ -47,7 +46,7 @@ class AiController(appState: AppState): GamingController(appState) {
     }
 
     fun nextStep() {
-        if (game.status == GameStatus.ENDED) {
+        if (game.status == Game.Status.ENDED) {
             state.status.placable.value = false
             return
         }
