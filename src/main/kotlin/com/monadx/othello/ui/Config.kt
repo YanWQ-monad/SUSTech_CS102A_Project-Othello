@@ -3,6 +3,7 @@ package com.monadx.othello.ui
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 
 object Config {
     val CELL_SIZE = 48.dp
@@ -17,4 +18,14 @@ object Config {
     val WHITE_CHESS_COLOR = Color.White
     val BLACK_CHESS_COLOR = Color.Black
     val GAME_BOARD_BACKGROUND_COLOR = Color(255, 150, 50)
+
+    val DIALOG_BACKGROUND_COLOR = Color(238, 238, 238)
+    val DIALOG_SHADOW_ELEVATION = 5.dp
+    val DIALOG_ROUNDED_CORNER_SIZE = 5.dp
+    val DIALOG_PADDING = 12.dp
+
+    val DIALOG_WIDTH = 120.dp
+    val DIALOG_TITLE_SIZE = 20.sp
+    val DIALOG_LINE_SPACER_BIG = 12.dp
+    val DIALOG_LINE_SPACER_SMALL = 8.dp
 }

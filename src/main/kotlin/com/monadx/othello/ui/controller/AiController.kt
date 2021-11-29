@@ -13,7 +13,7 @@ import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.UniversalBoard
 
-class AiController(appState: AppState): GamingController(appState) {
+class AiController(appState: AppState, val playerColor: ChessColor): GamingController(appState) {
     override val state = GameState()
 
     override val game = Game()
@@ -51,7 +51,7 @@ class AiController(appState: AppState): GamingController(appState) {
             return
         }
 
-        if (game.currentPlayer == ChessColor.BLACK) {
+        if (game.currentPlayer == playerColor) {
             state.status.placable.value = true
         } else {
             state.status.placable.value = false
@@ -85,7 +85,7 @@ class AiController(appState: AppState): GamingController(appState) {
         synchronized(game) {
             AiThread?.interrupt()
             game.undo()
-            while (game.currentPlayer != ChessColor.BLACK) {
+            while (game.currentPlayer != playerColor) {
                 game.undo()
             }
             syncAll()
