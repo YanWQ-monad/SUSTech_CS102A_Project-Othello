@@ -101,67 +101,52 @@ fun GameScoreBar(state: GameStatusState) {
         Modifier
             .fillMaxWidth()
     ) {
-        if (state.black.score.value > 0) {
-            Box(
-                Modifier
-                    .weight(state.black.score.value.toFloat())
-                    .height(STATUS_SCORE_BAR_HEIGHT)
-                    .background(Color.Black)
-            )
-        }
-        if (FULL_SCORE > state.black.score.value + state.white.score.value) {
-            Box(
-                Modifier
-                    .weight((FULL_SCORE - state.black.score.value - state.white.score.value).toFloat())
-                    .height(STATUS_SCORE_BAR_HEIGHT)
-                    .background(Color.Transparent)
-            )
-        }
-        if (state.white.score.value > 0) {
-            Box(
-                Modifier
-                    .weight(state.white.score.value.toFloat())
-                    .height(STATUS_SCORE_BAR_HEIGHT)
-                    .background(Color.White)
-            )
-        }
+        ScoreBarPiece(state.black.score.value, Color.Black)
+        ScoreBarPiece(FULL_SCORE - state.black.score.value - state.white.score.value, Color.Transparent)
+        ScoreBarPiece(state.white.score.value, Color.White)
+    }
+}
+
+@Composable
+fun RowScope.ScoreBarPiece(value: Int, color: Color) {
+    if (value > 0) {
+        Box(
+            Modifier
+                .weight(value.toFloat())
+                .height(STATUS_SCORE_BAR_HEIGHT)
+                .background(color)
+        )
     }
 }
 
 @Composable
 fun PlayerIcon(status: PlayerState.Status, color: Color) {
-    if (status != PlayerState.Status.IDLE) {
-        Box (
-            Modifier
-                .border(
-                    shape = CircleShape,
-                    color = when (status) {
-                        PlayerState.Status.PLAYING -> Color.Green
-                        PlayerState.Status.WIN -> Color.Yellow
-                        PlayerState.Status.ERROR -> Color.Red
-                        PlayerState.Status.IDLE -> throw IllegalStateException("Unreachable Code")
-                    },
-                    width = STATUS_ICON_BORDER_WIDTH,
-                )
-                .clip(CircleShape)
-        ) {
-            Box(
-                Modifier
-                    .size(STATUS_ICON_SIZE + STATUS_ICON_BORDER_WIDTH * 2)
-                    .background(color)
+    val borderModifier = if (status != PlayerState.Status.IDLE) {
+        Modifier
+            .border(
+                shape = CircleShape,
+                color = when (status) {
+                    PlayerState.Status.PLAYING -> Color.Green
+                    PlayerState.Status.WIN -> Color.Yellow
+                    PlayerState.Status.ERROR -> Color.Red
+                    PlayerState.Status.IDLE -> throw IllegalStateException("Unreachable Code")
+                },
+                width = STATUS_ICON_BORDER_WIDTH,
             )
-        }
     } else {
-        Box (
+        Modifier
+    };
+
+    Box(
+        Modifier
+            .then(borderModifier)
+            .padding(STATUS_ICON_BORDER_WIDTH)
+            .clip(CircleShape)
+    ) {
+        Box(
             Modifier
-                .padding(STATUS_ICON_BORDER_WIDTH)
-                .clip(CircleShape)
-        ) {
-            Box(
-                Modifier
-                    .size(STATUS_ICON_SIZE)
-                    .background(color)
-            )
-        }
+                .size(STATUS_ICON_SIZE)
+                .background(color)
+        )
     }
 }
