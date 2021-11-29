@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.compose") version "1.0.0-beta5"
 }
 
-group = "com.monadx.cs102"
+group = "com.monadx.othello"
 version = "1.0"
 
 repositories {
@@ -33,12 +33,23 @@ tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
 }
 
+tasks.withType<Jar> {
+    // specify duplicate handling strategy explicitly
+    // see: https://youtrack.jetbrains.com/issue/KT-46165
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    manifest {
+        attributes["Main-Class"] = "com.monadx.othello.MainKt"
+    }
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}
+
 compose.desktop {
     application {
         mainClass = "com.monadx.othello.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Othello"
+            packageName = "com.monadx.othello"
             packageVersion = "1.0.0"
         }
     }
