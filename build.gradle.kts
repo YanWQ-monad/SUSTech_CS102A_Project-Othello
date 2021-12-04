@@ -19,6 +19,9 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation(compose.desktop.currentOs)
+
+    api("org.apache.logging.log4j:log4j-core:2.14.1")
+    api("org.apache.logging.log4j:log4j-api:2.14.1")
 }
 
 sourceSets.main {
