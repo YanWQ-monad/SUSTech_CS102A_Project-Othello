@@ -2,6 +2,8 @@ package com.monadx.othello.ui.controller
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import org.apache.logging.log4j.LogManager
 
 import com.monadx.othello.chess.ChessColor
@@ -12,7 +14,10 @@ import com.monadx.othello.network.connection.connection.GameConnection
 import com.monadx.othello.network.packet.game.ChessPlacePacket
 import com.monadx.othello.network.packet.game.GamePacketListener
 import com.monadx.othello.network.packet.game.GameStartPacket
+import com.monadx.othello.network.request.RequestListener
+import com.monadx.othello.network.request.RequestManager
 import com.monadx.othello.ui.AppState
+import com.monadx.othello.ui.components.ConfirmBox
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.UniversalBoard
 
@@ -32,16 +37,35 @@ class OnlineController(
 
     val isServer = server != null
     var stage = Stage.PREPARE
+    val requestManager: RequestManager
+
+    val confirmBoxMessage: MutableState<String?> = mutableStateOf(null)
+    var confirmBoxCallback: ((Boolean) -> Unit)? = null
 
     init {
         state.status.placable.value = false
 
-        if (isServer) {
-            connection.send(GameStartPacket(playerColor!!.opposite, getBoardHash()))
-            stage = Stage.PLAYING
-            syncAll()
-            nextStep()
-        }
+        doStart()
+
+        requestManager = RequestManager(connection, object: RequestListener {
+            override fun onUndoRequest(onResponse: RequestManager.RequestResultConsumer) {
+                showConfirmBox("Opponent want to undo.") { result ->
+                    onResponse.accept(result)
+                    if (result) {
+                        doUndo(playerColor!!.opposite)
+                    }
+                }
+            }
+
+            override fun onRestartRequest(onResponse: RequestManager.RequestResultConsumer) {
+                showConfirmBox("Opponent want to restart.") { result ->
+                    onResponse.accept(result)
+                    if (result) {
+                        doStart()
+                    }
+                }
+            }
+        })
 
         connection.listen(object: GamePacketListener {
             override fun handleGameStart(packet: GameStartPacket) {
@@ -73,6 +97,12 @@ class OnlineController(
     @Composable
     override fun view() {
         MaterialTheme {
+            confirmBoxMessage.value?.let {
+                ConfirmBox(it) { result ->
+                    confirmBoxMessage.value = null
+                    confirmBoxCallback?.let { it(result) }
+                }
+            }
             UniversalBoard(this)
         }
     }
@@ -91,11 +121,36 @@ class OnlineController(
     }
 
     override fun undo() {
-        TODO("Not yet implemented")
+        requestManager.sendUndoRequest { result -> if (result) doUndo(playerColor!!) }
     }
 
     override fun restart() {
-        TODO("Not yet implemented")
+        requestManager.sendRestartRequest { result -> if (result) doStart() }
+    }
+
+    fun doUndo(color: ChessColor) {
+        LOGGER.info("$color undo")
+        game.undo()
+        while (game.currentPlayer != color) {
+            game.undo()
+        }
+        syncAll()
+        nextStep()
+    }
+
+    fun doStart() {
+        game.reset()
+        state.status.placable.value = false
+        stage = Stage.PREPARE
+
+        if (isServer) {
+            connection.send(GameStartPacket(playerColor!!.opposite, getBoardHash()))
+            stage = Stage.PLAYING
+            syncAll()
+            nextStep()
+        } else {
+            syncAll()
+        }
     }
 
     fun verifyBoardHash(boardHash: Int) {
@@ -113,6 +168,11 @@ class OnlineController(
         }
 
         state.status.placable.value = game.currentPlayer == playerColor
+    }
+
+    fun showConfirmBox(message: String, callback: (Boolean) -> Unit) {
+        confirmBoxMessage.value = message
+        confirmBoxCallback = callback
     }
 
     enum class Stage {

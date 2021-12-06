@@ -20,10 +20,10 @@ public abstract class PacketHandler<T extends PacketListener> {
 
     public boolean handle(RawPacket rawPacket) throws IOException {
         PacketItem<T> item = getMapping().get(rawPacket.packetId());
-        PacketDeserializer<T> function = item.deserializer();
-        if (function == null) {
+        if (item == null) {
             return false;
         }
+        PacketDeserializer<T> function = item.deserializer();
 
         ByteArrayInputStream byteStream = new ByteArrayInputStream(rawPacket.data());
         DataInputStream stream = new DataInputStream(byteStream);

@@ -6,16 +6,21 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import com.monadx.othello.network.connection.handler.GamePacketHandler;
+import com.monadx.othello.network.connection.handler.GameRequestPacketHandler;
 import com.monadx.othello.network.packet.Packet;
 import com.monadx.othello.network.packet.PacketListener;
 import com.monadx.othello.network.packet.PacketStream;
+import com.monadx.othello.network.packet.RawPacket;
 import com.monadx.othello.network.packet.game.GamePacketListener;
+import com.monadx.othello.network.packet.game.GameRequestPacketListener;
 
 public class GameConnection implements Closeable {
     private final static Logger LOGGER = LogManager.getLogger(GameConnection.class);
 
     PacketStream stream;
     Thread listenThread;
+
+    GameRequestPacketHandler requestHandler;
 
     public GameConnection(PacketStream stream) {
         this.stream = stream;
@@ -27,7 +32,12 @@ public class GameConnection implements Closeable {
 
             while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    handler.handle(stream.read());
+                    RawPacket rawPacket = stream.read();
+
+                    if (requestHandler != null && requestHandler.handle(rawPacket)) {
+                        continue;
+                    }
+                    handler.handle(rawPacket);
                 } catch (IOException e) {
                     LOGGER.error("IOException caught", e);
                     break;
@@ -36,6 +46,10 @@ public class GameConnection implements Closeable {
         });
 
         listenThread.start();
+    }
+
+    public void registerRequestListener(GameRequestPacketListener listener) {
+        requestHandler = new GameRequestPacketHandler(listener);
     }
 
     public <T extends PacketListener> void send(Packet<T> packet) throws IOException {
