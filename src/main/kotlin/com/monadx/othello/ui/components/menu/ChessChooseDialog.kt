@@ -12,6 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.monadx.othello.ui.Config.DIALOG_LINE_SPACER_BIG
 import com.monadx.othello.ui.Config.DIALOG_TITLE_SIZE
 import com.monadx.othello.ui.Config.DIALOG_WIDTH
+import com.monadx.othello.ui.components.DialogContent
 import com.monadx.othello.ui.controller.menu.ChessChooseController
 
 @Composable

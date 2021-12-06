@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 
 import com.monadx.othello.network.broadcast.MulticastClient
 import com.monadx.othello.ui.Config
+import com.monadx.othello.ui.components.DialogContent
 
 @Composable
 fun ServerListDialog(

@@ -1,4 +1,4 @@
-package com.monadx.othello.ui.components.menu
+package com.monadx.othello.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding

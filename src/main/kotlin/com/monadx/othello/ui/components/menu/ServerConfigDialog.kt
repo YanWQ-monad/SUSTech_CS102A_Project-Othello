@@ -16,6 +16,7 @@ import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.ui.Config.DIALOG_LINE_SPACER_BIG
 import com.monadx.othello.ui.Config.DIALOG_TITLE_SIZE
 import com.monadx.othello.ui.Config.DIALOG_WIDTH
+import com.monadx.othello.ui.components.DialogContent
 
 @Composable
 fun ServerConfigDialog(
