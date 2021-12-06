@@ -17,13 +17,10 @@ class ChessChooseController(appState: AppState) : Controller(appState) {
     override fun view() {
         ChessChooseDialog(
             this,
-            onCloseRequest = {
-                val controller: MenuController = appState.getController() as MenuController
-                controller.closeDialog()
-            },
             onConfirm = {
                 appState.setController(AiController(appState, color.value))
             },
+            onCloseRequest = { (appState.getController() as MenuController).closeDialog() }
         )
     }
 }
