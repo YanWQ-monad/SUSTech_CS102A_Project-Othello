@@ -172,6 +172,11 @@ class OnlineController(
         confirmBoxCallback = callback
     }
 
+    override fun onClose() {
+        connection.close()
+        server?.close()
+    }
+
     enum class Stage {
         PREPARE,
         PLAYING,
