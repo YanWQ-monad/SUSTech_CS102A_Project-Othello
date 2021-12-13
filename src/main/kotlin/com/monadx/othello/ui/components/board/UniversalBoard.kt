@@ -26,6 +26,7 @@ object PaneConfig {
 @Composable
 fun UniversalBoard(
     controller: GamingController,
+    enableSaving: Boolean = true,
     additionalButtons: @Composable () -> Unit = {},
 ) {
     Column(
@@ -76,12 +77,13 @@ fun UniversalBoard(
             }
 
             TextButton(
-                onClick = { controller.save() }
-            ) {
-                Text(
-                    text = "Save",
-                    color = MaterialTheme.colorScheme.onSurface,
+                onClick = { controller.save() },
+                enabled = enableSaving,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 )
+            ) {
+                Text("Save")
             }
 
             TextButton(

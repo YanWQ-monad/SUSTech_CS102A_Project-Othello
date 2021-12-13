@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 
 import com.monadx.othello.chess.Coordinate
 import com.monadx.othello.chess.Game
@@ -17,6 +18,8 @@ class VersusController(appState: AppState): GamingController(appState) {
 
     override val game = Game()
 
+    val isAlreadyCheated = mutableStateOf(false)
+
     init {
         super.syncAll()
         state.status.placable.value = true
@@ -24,10 +27,11 @@ class VersusController(appState: AppState): GamingController(appState) {
 
     @Composable
     override fun view() {
-        UniversalBoard(this) {
+        UniversalBoard(this, enableSaving = !isAlreadyCheated.value) {
             TextButton(
                 onClick = {
                     state.board.isCheatMode.value = !state.board.isCheatMode.value
+                    isAlreadyCheated.value = true
                 },
                 colors = when (state.board.isCheatMode.value) {
                     true -> ButtonDefaults.textButtonColors(
@@ -64,6 +68,7 @@ class VersusController(appState: AppState): GamingController(appState) {
     }
 
     override fun restart() {
+        isAlreadyCheated.value = false
         game.reset()
         super.syncAll()
     }
