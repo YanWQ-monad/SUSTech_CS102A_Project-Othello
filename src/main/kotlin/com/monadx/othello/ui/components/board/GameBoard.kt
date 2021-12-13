@@ -31,6 +31,8 @@ class GameBoardState {
         x -> Array(8) { y -> Piece(x, y) }
     }
 
+    val isCheatMode = mutableStateOf(false)
+
     fun at(x: Int, y: Int) = rows[x][y]
 
     class Piece(val x: Int, val y: Int) {
@@ -51,7 +53,7 @@ fun GameBoard(
     Surface {
         Column {
             state.rows.forEach { row ->
-                GameBoardRow(row, isTurn, onClick)
+                GameBoardRow(row, isTurn, state.isCheatMode.value, onClick)
             }
         }
     }
@@ -61,6 +63,7 @@ fun GameBoard(
 fun GameBoardRow(
     row: Array<GameBoardState.Piece>,
     isTurn: Boolean,
+    isCheatMode: Boolean,
     onClick: (Int, Int) -> Unit,
 ) {
     Row {
@@ -72,7 +75,7 @@ fun GameBoardRow(
                     .border(BoardConfig.CELL_BORDER_WIDTH / 2, Color.Black)
                     .background(GAME_BOARD_BACKGROUND_COLOR)
             ) {
-                GameBoardPiece(cell, isTurn, onClick)
+                GameBoardPiece(cell, isTurn, isCheatMode, onClick)
             }
         }
     }
@@ -82,6 +85,7 @@ fun GameBoardRow(
 fun GameBoardPiece(
     piece: GameBoardState.Piece,
     isTurn: Boolean,
+    isCheatMode: Boolean,
     onClick: (Int, Int) -> Unit,
 ) {
     // to make the chess piece in the center
@@ -110,7 +114,7 @@ fun GameBoardPiece(
                 .background(piece.color.value.graphicsColor())
                 .clickable(
                     // enabled only if the position can place a chess piece, and now it is the user's turn
-                    enabled = piece.canMove.value && isTurn,
+                    enabled = isCheatMode || (piece.canMove.value && isTurn),
                     onClick = { onClick(piece.x, piece.y) }
                 )
         )

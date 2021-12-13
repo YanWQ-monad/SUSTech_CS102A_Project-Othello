@@ -1,5 +1,9 @@
 package com.monadx.othello.ui.controller
 
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 
 import com.monadx.othello.chess.Coordinate
@@ -20,16 +24,38 @@ class VersusController(appState: AppState): GamingController(appState) {
 
     @Composable
     override fun view() {
-        UniversalBoard(this)
+        UniversalBoard(this) {
+            TextButton(
+                onClick = {
+                    state.board.isCheatMode.value = !state.board.isCheatMode.value
+                },
+                colors = when (state.board.isCheatMode.value) {
+                    true -> ButtonDefaults.textButtonColors(
+                        backgroundColor = MaterialTheme.colors.error,
+                        contentColor = MaterialTheme.colors.onError,
+                    )
+                    false -> ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colors.onSurface
+                    )
+                },
+            ) {
+                Text(if (state.board.isCheatMode.value) "Cheating" else "Cheat")
+            }
+        }
     }
 
     override fun onClick(x: Int, y: Int) {
-        if (!game.place(Coordinate(x, y))) {
-            return
+        if (state.board.isCheatMode.value) {
+            game.board.forceFlip(Coordinate(x, y))
+            println("Cheating flip: $x, $y")
+        } else {
+            if (!game.place(Coordinate(x, y))) {
+                return
+            }
+            println("VersusController.onClick($x, $y)")
         }
 
         super.syncAll()
-        println("VersusController.onClick($x, $y)")
     }
 
     override fun undo() {

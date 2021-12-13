@@ -114,6 +114,19 @@ public class Board {
         return count;
     }
 
+    public void forceFlip(Coordinate coordinate) {
+        int x = coordinate.x(), y = coordinate.y();
+        ChessColor nextColor = switch (board[x][y]) {
+            case EMPTY -> ChessColor.BLACK;
+            case BLACK -> ChessColor.WHITE;
+            case WHITE -> ChessColor.EMPTY;
+        };
+
+        this.hash ^= ZobristHashing.HASH[x][y][board[x][y].getId()] ^ ZobristHashing.HASH[x][y][nextColor.getId()];
+
+        board[x][y] = nextColor;
+    }
+
     @Override
     public int hashCode() {
         return hash;

@@ -24,7 +24,10 @@ object PaneConfig {
 }
 
 @Composable
-fun UniversalBoard(controller: GamingController) {
+fun UniversalBoard(
+    controller: GamingController,
+    additionalButtons: @Composable () -> Unit = {},
+) {
     Column(
         Modifier
             .background(MaterialTheme.colorScheme.surface)
@@ -89,6 +92,8 @@ fun UniversalBoard(controller: GamingController) {
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
+
+            additionalButtons()
         }
     }
 }
