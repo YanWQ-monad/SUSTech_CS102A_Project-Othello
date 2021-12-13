@@ -30,7 +30,7 @@ class App {
                     state.getController().onClose()
                     exitApplication()
                 },
-                state = WindowState(size = DpSize(408.dp, 542.dp)) // TODO: avoid magic number
+                state = WindowState(size = DpSize(440.dp, 574.dp)) // TODO: avoid magic number
             ) {
                 MaterialTheme(
                     colorScheme = lightColorScheme(

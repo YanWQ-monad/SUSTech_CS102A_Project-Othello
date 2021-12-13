@@ -6,8 +6,8 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 object Config {
-    val CELL_SIZE = 48.dp
-    val PIECE_SIZE = 40.dp
+    val CELL_SIZE = 52.dp
+    val PIECE_SIZE = 42.dp
 
     val STATUS_ICON_SIZE = 32.dp
     val STATUS_ICON_BORDER_WIDTH = 2.5.dp
