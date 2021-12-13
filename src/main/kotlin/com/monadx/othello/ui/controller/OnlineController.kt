@@ -1,6 +1,5 @@
 package com.monadx.othello.ui.controller
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -96,15 +95,13 @@ class OnlineController(
 
     @Composable
     override fun view() {
-        MaterialTheme {
-            confirmBoxMessage.value?.let {
-                ConfirmBox(it) { result ->
-                    confirmBoxMessage.value = null
-                    confirmBoxCallback?.let { it(result) }
-                }
+        confirmBoxMessage.value?.let {
+            ConfirmBox(it) { result ->
+                confirmBoxMessage.value = null
+                confirmBoxCallback?.let { it(result) }
             }
-            UniversalBoard(this)
         }
+        UniversalBoard(this)
     }
 
     override fun onClick(x: Int, y: Int) {

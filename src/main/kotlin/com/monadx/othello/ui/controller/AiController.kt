@@ -1,6 +1,5 @@
 package com.monadx.othello.ui.controller
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import kotlin.concurrent.thread
 
@@ -29,9 +28,7 @@ class AiController(appState: AppState, val playerColor: ChessColor): GamingContr
 
     @Composable
     override fun view() {
-        MaterialTheme {
-            UniversalBoard(this)
-        }
+        UniversalBoard(this)
     }
 
     override fun onClick(x: Int, y: Int) {

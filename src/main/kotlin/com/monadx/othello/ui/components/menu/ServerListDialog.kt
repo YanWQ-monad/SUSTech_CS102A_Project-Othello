@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,8 +35,18 @@ fun ServerListDialog(
             Spacer(Modifier.height(Config.DIALOG_LINE_SPACER_BIG))
 
             Column {
-                for (packet in list) {
-                    ServerListItem(packet, onClick = { onChoose(packet) })
+                if (list.isEmpty()) {
+                    Text(
+                        "No server found",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(Config.DIALOG_WIDTH),
+                        color = Color.Gray,
+                        fontStyle = FontStyle.Italic
+                    )
+                } else {
+                    for (packet in list) {
+                        ServerListItem(packet, onClick = { onChoose(packet) })
+                    }
                 }
             }
         }
@@ -49,10 +60,20 @@ fun ServerListItem(packet: MulticastClient.Packet, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         Column(Modifier.padding(8.dp)) {
-            Text(
-                text = packet.message.serverName,
-                style = MaterialTheme.typography.h6,
-            )
+            if (packet.message.serverName.isEmpty()) {
+                Text(
+                    text = "Unnamed Server",
+                    style = MaterialTheme.typography.h6,
+                    color = Color.Gray,
+                    fontStyle = FontStyle.Italic,
+                    fontWeight = FontWeight.Normal,
+                )
+            } else {
+                Text(
+                    text = packet.message.serverName,
+                    style = MaterialTheme.typography.h6,
+                )
+            }
 
             Text(
                 text = "${packet.sender.hostAddress}:${packet.message.port}",

@@ -22,7 +22,7 @@ import com.monadx.othello.ui.Config.PIECE_SIZE
 import com.monadx.othello.ui.Config.WHITE_CHESS_COLOR
 
 object BoardConfig {
-    val PLACEABLE_BORDER_WIDTH = 1.dp
+    val PLACEABLE_BORDER_WIDTH = 0.5.dp
     val CELL_BORDER_WIDTH = 1.dp
 }
 
@@ -68,8 +68,8 @@ fun GameBoardRow(
             Box (
                 Modifier
                     // The border between the cells is 1 dp, thus, the width here is 0.5 dp
-                    .border(BoardConfig.CELL_BORDER_WIDTH / 2, Color.Black)
                     .size(CELL_SIZE)
+                    .border(BoardConfig.CELL_BORDER_WIDTH / 2, Color.Black)
                     .background(GAME_BOARD_BACKGROUND_COLOR)
             ) {
                 GameBoardPiece(cell, isTurn, onClick)

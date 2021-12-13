@@ -1,6 +1,5 @@
 package com.monadx.othello.ui.controller
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 
 import com.monadx.othello.chess.Coordinate
@@ -21,9 +20,7 @@ class VersusController(appState: AppState): GamingController(appState) {
 
     @Composable
     override fun view() {
-        MaterialTheme {
-            UniversalBoard(this)
-        }
+        UniversalBoard(this)
     }
 
     override fun onClick(x: Int, y: Int) {

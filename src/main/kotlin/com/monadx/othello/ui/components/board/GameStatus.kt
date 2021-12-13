@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -71,7 +72,8 @@ fun GameScore(state: GameStatusState) {
             PlayerIcon(state.black.status.value, BLACK_CHESS_COLOR)
             Text(
                 text = "${state.black.score.value}",
-                fontSize = STATUS_SCORE_SIZE,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .paddingFromBaseline(bottom = StatusConfig.STATUS_SCORE_PADDING_BASELINE)
                     .offset(x = StatusConfig.STATUS_SCORE_SPACER)
@@ -83,7 +85,8 @@ fun GameScore(state: GameStatusState) {
         ) {
             Text(
                 text = "${state.white.score.value}",
-                fontSize = STATUS_SCORE_SIZE,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .paddingFromBaseline(bottom = StatusConfig.STATUS_SCORE_PADDING_BASELINE)
                     .offset(x = -StatusConfig.STATUS_SCORE_SPACER)
@@ -101,9 +104,9 @@ fun GameScoreBar(state: GameStatusState) {
         Modifier
             .fillMaxWidth()
     ) {
-        ScoreBarPiece(state.black.score.value, Color.Black)
+        ScoreBarPiece(state.black.score.value, BLACK_CHESS_COLOR)
         ScoreBarPiece(FULL_SCORE - state.black.score.value - state.white.score.value, Color.Transparent)
-        ScoreBarPiece(state.white.score.value, Color.White)
+        ScoreBarPiece(state.white.score.value, WHITE_CHESS_COLOR)
     }
 }
 

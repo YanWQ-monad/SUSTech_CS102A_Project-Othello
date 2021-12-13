@@ -1,16 +1,15 @@
 package com.monadx.othello.ui.components.menu
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 
 import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.ui.Config.DIALOG_LINE_SPACER_BIG
@@ -49,7 +48,13 @@ fun ServerConfigDialog(
 
             Spacer(Modifier.height(DIALOG_LINE_SPACER_BIG))
 
-            ChessChooser(color, onColorChange)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Your Color: ")
+
+                Spacer(Modifier.width(3.dp))
+
+                ChessChooser(color, onColorChange)
+            }
 
             Spacer(Modifier.height(DIALOG_LINE_SPACER_BIG))
 

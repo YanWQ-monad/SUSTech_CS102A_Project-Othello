@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.5.31"
-    id("org.jetbrains.compose") version "1.0.0-beta5"
+    id("org.jetbrains.compose") version "1.0.0"
 }
 
 group = "com.monadx.othello"
@@ -19,6 +19,9 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation(compose.desktop.currentOs)
+
+    @kotlin.OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+    api(compose.material3)
 
     api("org.apache.logging.log4j:log4j-core:2.14.1")
     api("org.apache.logging.log4j:log4j-api:2.14.1")

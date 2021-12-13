@@ -1,15 +1,13 @@
 package com.monadx.othello.ui.controller
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.apache.logging.log4j.LogManager
@@ -18,6 +16,13 @@ import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.controller.menu.ChessChooseController
 import com.monadx.othello.ui.controller.menu.ServerConfigController
 import com.monadx.othello.ui.controller.menu.ServerListController
+
+object MenuViewConfig {
+    val MENU_PADDING_TOP = 64.dp
+    val MENU_TITLE_MARGIN_BOTTOM = 24.dp
+
+    val BUTTON_WIDTH = 130.dp
+}
 
 class MenuController(appState: AppState): Controller(appState) {
     companion object {
@@ -28,29 +33,49 @@ class MenuController(appState: AppState): Controller(appState) {
 
     @Composable
     override fun view() {
-        MaterialTheme {
-            Box(
-                Modifier
-                    .width(160.dp)
-                    .height(320.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize().padding(top = MenuViewConfig.MENU_PADDING_TOP),
+        ) {
+            Text(
+                text = "Othello",
+                style = MaterialTheme.typography.displayLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+
+            Spacer(Modifier.height(MenuViewConfig.MENU_TITLE_MARGIN_BOTTOM))
+
+            val buttonWidthModifier = Modifier.width(MenuViewConfig.BUTTON_WIDTH)
+
+            Button(
+                onClick = { appState.setController(VersusController(appState)) },
+                modifier = buttonWidthModifier,
             ) {
-                Column {
-                    Button(onClick = { appState.setController(VersusController(appState)) }) {
-                        Text("Versus Mode")
-                    }
-                    Button(onClick = { setDialog(ChessChooseController(appState)) }) {
-                        Text("AI Mode")
-                    }
-                    Button(onClick = { setDialog(ServerConfigController(appState)) }) {
-                        Text("Start Server")
-                    }
-                    Button(onClick = { setDialog(ServerListController(appState)) }) {
-                        Text("Join Server")
-                    }
-                }
-                dialogController.value?.view()
+                Text("Versus Mode")
+            }
+
+            Button(
+                onClick = { setDialog(ChessChooseController(appState)) },
+                modifier = buttonWidthModifier,
+            ) {
+                Text("AI Mode")
+            }
+
+            Button(
+                onClick = { setDialog(ServerConfigController(appState)) },
+                modifier = buttonWidthModifier,
+            ) {
+                Text("Start Server")
+            }
+
+            Button(
+                onClick = { setDialog(ServerListController(appState)) },
+                modifier = buttonWidthModifier,
+            ) {
+                Text("Join Server")
             }
         }
+        dialogController.value?.view()
     }
 
     fun setDialog(controller: Controller?) {
