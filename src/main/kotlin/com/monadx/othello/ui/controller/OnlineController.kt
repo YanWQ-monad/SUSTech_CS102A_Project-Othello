@@ -128,7 +128,7 @@ class OnlineController(
     fun doUndo(color: ChessColor) {
         LOGGER.info("$color undo")
         game.undo()
-        while (game.currentPlayer != color) {
+        while (game.currentPlayer != color && game.placedCount > 4) {
             game.undo()
         }
         syncAll()
