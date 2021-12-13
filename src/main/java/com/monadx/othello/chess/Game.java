@@ -148,6 +148,10 @@ public class Game {
         return stepList;
     }
 
+    public List<Snapshot> getSnapshotList() {
+        return snapshotList;
+    }
+
     public enum Status {
         PLAYING,
         ENDED,

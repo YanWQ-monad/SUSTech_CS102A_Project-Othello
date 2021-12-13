@@ -74,6 +74,18 @@ class MenuController(appState: AppState): Controller(appState) {
             ) {
                 Text("Join Server")
             }
+
+            Button(
+                onClick = {
+                    val replayController = ReplayController(appState)
+                    if (replayController.loaded) {
+                        appState.setController(replayController)
+                    }
+                },
+                modifier = buttonWidthModifier,
+            ) {
+                Text("Replay")
+            }
         }
         dialogController.value?.view()
     }
