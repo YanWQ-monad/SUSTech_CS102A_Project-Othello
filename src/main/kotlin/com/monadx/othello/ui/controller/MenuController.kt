@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import org.apache.logging.log4j.LogManager
 
 import com.monadx.othello.ui.AppState
-import com.monadx.othello.ui.controller.menu.ChessChooseController
+import com.monadx.othello.ui.controller.menu.AiConfigController
 import com.monadx.othello.ui.controller.menu.ServerConfigController
 import com.monadx.othello.ui.controller.menu.ServerListController
 
@@ -55,7 +55,7 @@ class MenuController(appState: AppState): Controller(appState) {
             }
 
             Button(
-                onClick = { setDialog(ChessChooseController(appState)) },
+                onClick = { setDialog(AiConfigController(appState)) },
                 modifier = buttonWidthModifier,
             ) {
                 Text("AI Mode")

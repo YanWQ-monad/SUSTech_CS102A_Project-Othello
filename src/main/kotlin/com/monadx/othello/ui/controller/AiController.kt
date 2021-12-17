@@ -3,9 +3,7 @@ package com.monadx.othello.ui.controller
 import androidx.compose.runtime.Composable
 import kotlin.concurrent.thread
 
-import com.monadx.othello.ai.evaluate.HeuristicEvaluator
-import com.monadx.othello.ai.searcher.MinimaxSearcher
-import com.monadx.othello.ai.searcher.Searcher
+import com.monadx.othello.ai.difficulty.Difficulty
 import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Coordinate
 import com.monadx.othello.chess.Game
@@ -13,14 +11,12 @@ import com.monadx.othello.ui.AppState
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.UniversalBoard
 
-class AiController(appState: AppState, val playerColor: ChessColor): GamingController(appState) {
+class AiController(appState: AppState, val playerColor: ChessColor, val difficulty: Difficulty): GamingController(appState) {
     override val state = GameState()
 
     override val game = Game()
 
     var AiThread: Thread? = null
-
-    val searcher: Searcher = MinimaxSearcher(HeuristicEvaluator())
 
     init {
         syncAll()
@@ -57,7 +53,7 @@ class AiController(appState: AppState, val playerColor: ChessColor): GamingContr
             AiThread = thread {
                 val oldTime = System.currentTimeMillis()
 
-                val result = searcher.search(game.board, game.currentPlayer, game.placedCount)
+                val result = difficulty.searchBestMove(game.board, game.currentPlayer, game.placedCount)
                 val move = result.best
 
                 val timePassBy = System.currentTimeMillis() - oldTime
