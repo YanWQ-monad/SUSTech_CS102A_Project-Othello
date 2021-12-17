@@ -4,7 +4,8 @@ import androidx.compose.runtime.Composable
 import kotlin.concurrent.thread
 
 import com.monadx.othello.ai.evaluate.HeuristicEvaluator
-import com.monadx.othello.ai.Searcher
+import com.monadx.othello.ai.searcher.MinimaxSearcher
+import com.monadx.othello.ai.searcher.Searcher
 import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Coordinate
 import com.monadx.othello.chess.Game
@@ -19,7 +20,7 @@ class AiController(appState: AppState, val playerColor: ChessColor): GamingContr
 
     var AiThread: Thread? = null
 
-    val searcher = Searcher(HeuristicEvaluator())
+    val searcher: Searcher = MinimaxSearcher(HeuristicEvaluator())
 
     init {
         syncAll()
@@ -56,8 +57,8 @@ class AiController(appState: AppState, val playerColor: ChessColor): GamingContr
             AiThread = thread {
                 val oldTime = System.currentTimeMillis()
 
-                val collector = searcher.search(game.board, game.currentPlayer, game.placedCount)
-                val move = collector.best
+                val result = searcher.search(game.board, game.currentPlayer, game.placedCount)
+                val move = result.best
 
                 val timePassBy = System.currentTimeMillis() - oldTime
                 if (timePassBy < 1000) {
@@ -70,7 +71,7 @@ class AiController(appState: AppState, val playerColor: ChessColor): GamingContr
                     }
                     game.place(move)
                     println("  AI move: $move")
-                    println("  expected value: ${collector.score}")
+                    println("  expected value: ${result.score}")
                     syncAll()
                     nextStep()
                 }
