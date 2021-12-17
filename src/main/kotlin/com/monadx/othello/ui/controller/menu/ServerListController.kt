@@ -45,7 +45,11 @@ class ServerListController(appState: AppState) : Controller(appState) {
                     val channel = Channel.connect(packet.sender, packet.message.port)
                     val packetStream = PacketStream(channel)
                     val connection = ClientHandshakeConnection(packetStream)
-                    connection.runUntilComplete()
+                    val isSuccess = connection.runUntilComplete()
+                    if (!isSuccess) {
+                        LOGGER.error("Server handshake failed")
+                        return@ServerListDialog
+                    }
 
                     (appState.getController() as MenuController).closeDialog()
                     val gameConnection = GameConnection(connection.stream)
