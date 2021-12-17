@@ -16,7 +16,7 @@ class AiController(appState: AppState, val playerColor: ChessColor, val difficul
 
     override val game = Game()
 
-    var AiThread: Thread? = null
+    var aiThread: Thread? = null
 
     init {
         syncAll()
@@ -41,19 +41,19 @@ class AiController(appState: AppState, val playerColor: ChessColor, val difficul
 
     fun nextStep() {
         if (game.status == Game.Status.ENDED) {
-            state.status.placable.value = false
+            state.status.placeable.value = false
             return
         }
 
         if (game.currentPlayer == playerColor) {
-            state.status.placable.value = true
+            state.status.placeable.value = true
         } else {
-            state.status.placable.value = false
+            state.status.placeable.value = false
 
-            AiThread = thread {
+            aiThread = thread {
                 val oldTime = System.currentTimeMillis()
 
-                val result = difficulty.searchBestMove(game.board, game.currentPlayer, game.placedCount)
+                val result = difficulty.searchBestMove(game.board, game.currentPlayer!!, game.placedCount)
                 val move = result.best
 
                 val timePassBy = System.currentTimeMillis() - oldTime
@@ -62,8 +62,8 @@ class AiController(appState: AppState, val playerColor: ChessColor, val difficul
                 }
 
                 synchronized(game) {
-                    if (AiThread!!.isInterrupted) {
-                        return@thread;
+                    if (aiThread!!.isInterrupted) {
+                        return@thread
                     }
                     game.place(move)
                     println("  AI move: $move")
@@ -77,7 +77,7 @@ class AiController(appState: AppState, val playerColor: ChessColor, val difficul
 
     override fun undo() {
         synchronized(game) {
-            AiThread?.interrupt()
+            aiThread?.interrupt()
             game.undo()
             while (game.currentPlayer != playerColor) {
                 game.undo()
@@ -89,7 +89,7 @@ class AiController(appState: AppState, val playerColor: ChessColor, val difficul
 
     override fun restart() {
         synchronized(game) {
-            AiThread?.interrupt()
+            aiThread?.interrupt()
             game.reset()
             syncAll()
             nextStep()
@@ -104,7 +104,7 @@ class AiController(appState: AppState, val playerColor: ChessColor, val difficul
 
     override fun load() {
         synchronized(game) {
-            AiThread?.interrupt()
+            aiThread?.interrupt()
             super.load()
             nextStep()
         }

@@ -3,19 +3,21 @@ package com.monadx.othello.chess;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Game {
-    private final Board board = new Board();
-    private ChessColor currentPlayer = ChessColor.BLACK;
+    @NotNull private final Board board = new Board();
+    @Nullable private ChessColor currentPlayer = ChessColor.BLACK;
 
-    private Status status = Status.PLAYING;
+    @NotNull private Status status = Status.PLAYING;
 
     // only set when the game is ended
     // if `winner` is null when the game is ended, it means it's a draw
-    private ChessColor winner = null;
+    @Nullable private ChessColor winner = null;
 
-    private List<Step> stepList = new ArrayList<>();
-    private List<Snapshot> snapshotList = new ArrayList<>();
+    @NotNull private final List<Step> stepList = new ArrayList<>();
+    @NotNull private final List<Snapshot> snapshotList = new ArrayList<>();
 
     public void reset() {
         board.reset();
@@ -26,7 +28,7 @@ public class Game {
         snapshotList.clear();
     }
 
-    public void loadFrom(Game game) {
+    public void loadFrom(@NotNull Game game) {
         board.loadFrom(game.board);
         currentPlayer = game.currentPlayer;
         status = game.status;
@@ -38,14 +40,15 @@ public class Game {
     }
 
     // Checks whether the given color of the chess can place on the position
-    public boolean checkPlaceable(Coordinate coordinate) {
-        return status != Status.ENDED && board.checkPlaceable(coordinate, currentPlayer);
+    public boolean checkPlaceable(@NotNull Coordinate coordinate) {
+        return status != Status.ENDED && currentPlayer != null && board.checkPlaceable(coordinate, currentPlayer);
     }
 
     // Place a chess on the position
     // Return true if the chess is placed successfully
-    public boolean place(Coordinate coordinate) {
+    public boolean place(@NotNull Coordinate coordinate) {
         assert status == Status.PLAYING;
+        assert currentPlayer != null;
 
         snapshotList.add(new Snapshot(board.copy(), currentPlayer, status));
 
@@ -81,6 +84,7 @@ public class Game {
     }
 
     private void nextTurn() {
+        assert currentPlayer != null;
         currentPlayer = currentPlayer.getOpposite();
 
         boolean placeable = Arrays.stream(Utils.POSITION_LIST)
@@ -101,6 +105,7 @@ public class Game {
         }
     }
 
+    @Nullable
     private ChessColor calculateWinner() {
         assert status == Status.ENDED;
         int black = 0, white = 0;
@@ -124,30 +129,36 @@ public class Game {
         }
     }
 
+    @NotNull
     public Board getBoard() {
         return board;
     }
 
+    @Nullable
     public ChessColor getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(ChessColor currentPlayer) {
+    public void setCurrentPlayer(@Nullable ChessColor currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
+    @Nullable
     public ChessColor getWinner() {
         return winner;
     }
 
+    @NotNull
     public Status getStatus() {
         return status;
     }
 
+    @NotNull
     public List<Step> getStepList() {
         return stepList;
     }
 
+    @NotNull
     public List<Snapshot> getSnapshotList() {
         return snapshotList;
     }

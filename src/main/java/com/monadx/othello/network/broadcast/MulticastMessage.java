@@ -1,34 +1,34 @@
 package com.monadx.othello.network.broadcast;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
 import java.io.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.monadx.othello.chess.ChessColor;
 import com.monadx.othello.save.NullHelper;
 
-public class MulticastMessage {
+public record MulticastMessage(
+        int port,
+        @NotNull String serverName,
+        @Nullable ChessColor serverColor
+) {
     static final long MAGIC_HEADER = 0x9784757560932L;
 
-    int port;
-    String serverName;
-    @Nullable ChessColor serverColor;
-
-    public MulticastMessage(int port, String serverName, @Nullable ChessColor serverColor) {
+    public MulticastMessage(int port, @NotNull String serverName, @Nullable ChessColor serverColor) {
         this.port = port;
         this.serverName = serverName;
         this.serverColor = serverColor;
     }
 
     @Nullable
-    @Contract(pure = true)
-    public static MulticastMessage createWithCheck(int port, String serverName, @Nullable ChessColor serverColor) {
+    public static MulticastMessage createWithCheck(int port, @NotNull String serverName, @Nullable ChessColor serverColor) {
         if (port < 0 || port > 65535) {
             return null;
         }
         return new MulticastMessage(port, serverName, serverColor);
     }
 
+    @NotNull
     public byte[] toBytes() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream stream = new DataOutputStream(byteStream);
@@ -49,7 +49,7 @@ public class MulticastMessage {
     }
 
     @Nullable
-    public static MulticastMessage fromBytes(byte[] bytes, int offset, int length) {
+    public static MulticastMessage fromBytes(@NotNull byte[] bytes, int offset, int length) {
         ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes, offset, length);
         DataInputStream stream = new DataInputStream(byteStream);
 
@@ -87,6 +87,7 @@ public class MulticastMessage {
         return port;
     }
 
+    @NotNull
     public String getServerName() {
         return serverName;
     }

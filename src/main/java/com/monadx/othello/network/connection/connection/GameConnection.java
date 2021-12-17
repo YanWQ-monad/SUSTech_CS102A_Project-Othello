@@ -1,9 +1,11 @@
 package com.monadx.othello.network.connection.connection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.Closeable;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.monadx.othello.network.connection.handler.GamePacketHandler;
 import com.monadx.othello.network.connection.handler.GameRequestPacketHandler;
@@ -17,16 +19,16 @@ import com.monadx.othello.network.packet.game.GameRequestPacketListener;
 public class GameConnection implements Closeable {
     private final static Logger LOGGER = LogManager.getLogger(GameConnection.class);
 
-    PacketStream stream;
-    Thread listenThread;
+    @NotNull private final PacketStream stream;
+    @Nullable private Thread listenThread;
 
-    GameRequestPacketHandler requestHandler;
+    @Nullable private GameRequestPacketHandler requestHandler;
 
-    public GameConnection(PacketStream stream) {
+    public GameConnection(@NotNull PacketStream stream) {
         this.stream = stream;
     }
 
-    public void listen(GamePacketListener listener) {
+    public void listen(@NotNull GamePacketListener listener) {
         listenThread = new Thread(() -> {
             GamePacketHandler handler = new GamePacketHandler(listener);
 
@@ -48,11 +50,11 @@ public class GameConnection implements Closeable {
         listenThread.start();
     }
 
-    public void registerRequestListener(GameRequestPacketListener listener) {
+    public void registerRequestListener(@NotNull GameRequestPacketListener listener) {
         requestHandler = new GameRequestPacketHandler(listener);
     }
 
-    public <T extends PacketListener> void send(Packet<T> packet) throws IOException {
+    public <T extends PacketListener> void send(@NotNull Packet<T> packet) throws IOException {
         stream.send(packet);
     }
 

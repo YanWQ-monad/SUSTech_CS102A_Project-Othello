@@ -1,5 +1,6 @@
 package com.monadx.othello.chess;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class Utils {
@@ -13,6 +14,7 @@ public class Utils {
     private Utils() {}
 
     @NotNull
+    @Contract(" -> new")
     private static Coordinate[] constructPositionList() {
         Coordinate[] list = new Coordinate[8 * 8];
 

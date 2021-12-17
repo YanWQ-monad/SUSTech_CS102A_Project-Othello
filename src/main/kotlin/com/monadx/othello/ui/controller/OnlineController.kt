@@ -42,7 +42,7 @@ class OnlineController(
     var confirmBoxCallback: ((Boolean) -> Unit)? = null
 
     init {
-        state.status.placable.value = false
+        state.status.placeable.value = false
 
         doStart()
 
@@ -105,7 +105,7 @@ class OnlineController(
     }
 
     override fun onClick(x: Int, y: Int) {
-        val color = game.currentPlayer
+        val color = game.currentPlayer!!
         if (!game.place(Coordinate(x, y))) {
             return
         }
@@ -137,7 +137,7 @@ class OnlineController(
 
     fun doStart() {
         game.reset()
-        state.status.placable.value = false
+        state.status.placeable.value = false
         stage = Stage.PREPARE
 
         if (isServer) {
@@ -160,11 +160,11 @@ class OnlineController(
 
     fun nextStep() {
         if (game.status == Game.Status.ENDED) {
-            state.status.placable.value = false
+            state.status.placeable.value = false
             return
         }
 
-        state.status.placable.value = game.currentPlayer == playerColor
+        state.status.placeable.value = game.currentPlayer == playerColor
     }
 
     fun showConfirmBox(message: String, callback: (Boolean) -> Unit) {

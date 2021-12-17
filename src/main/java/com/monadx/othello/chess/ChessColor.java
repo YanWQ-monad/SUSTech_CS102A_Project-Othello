@@ -3,6 +3,7 @@ package com.monadx.othello.chess;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
 
 public enum ChessColor {
     EMPTY(0),
@@ -15,6 +16,7 @@ public enum ChessColor {
         this.id = id;
     }
 
+    @NotNull
     public ChessColor getOpposite() {
         return switch (this) {
             case BLACK -> WHITE;
@@ -23,7 +25,8 @@ public enum ChessColor {
         };
     }
 
-    public static ChessColor deserialize(DataInput in) throws IOException {
+    @NotNull
+    public static ChessColor deserialize(@NotNull DataInput in) throws IOException {
         return switch (in.readByte()) {
             case 0 -> EMPTY;
             case 1 -> BLACK;
@@ -32,7 +35,7 @@ public enum ChessColor {
         };
     }
 
-    public void serialize(DataOutput out) throws IOException {
+    public void serialize(@NotNull DataOutput out) throws IOException {
         out.writeByte(id);
     }
 

@@ -1,12 +1,14 @@
 package com.monadx.othello.ai.evaluate;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.monadx.othello.ai.utils.BoardExtends;
 import com.monadx.othello.chess.Board;
 import com.monadx.othello.chess.ChessColor;
 
 public class DynamicEvaluator extends Evaluator {
     @Override
-    public int evaluateColor(Board board, ChessColor color, int progress) {
+    public int evaluateColor(@NotNull Board board, @NotNull ChessColor color, int progress) {
         BoardExtends boardExtends = new BoardExtends(board);
         Weight weight = Weight.getPeriodAt(progress);
 
@@ -24,7 +26,8 @@ public class DynamicEvaluator extends Evaluator {
     }
 
     @Override
-    public Result correctForfeit(Board board, int progress, Result result, ChessColor color) {
+    @NotNull
+    public Result correctForfeit(@NotNull Board board, int progress, @NotNull Result result, @NotNull ChessColor color) {
         return result;
     }
 
@@ -44,6 +47,7 @@ public class DynamicEvaluator extends Evaluator {
             this.stable = stable;
         }
 
+        @NotNull
         public static Weight getPeriodAt(int progress) {
             int period = (progress - 5) / 10;
             return values()[period];

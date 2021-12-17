@@ -1,10 +1,12 @@
 package com.monadx.othello.network.packet.game;
 
-import com.monadx.othello.network.packet.Packet;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import com.monadx.othello.network.packet.Packet;
 
 public class RestartResponsePacket extends Packet<GameRequestPacketListener> {
     public static final int PACKET_ID = 0x06;
@@ -18,19 +20,21 @@ public class RestartResponsePacket extends Packet<GameRequestPacketListener> {
     }
 
     @Override
-    public void serialize(DataOutputStream stream) throws IOException {
+    public void serialize(@NotNull DataOutputStream stream) throws IOException {
         stream.writeInt(requestId);
         stream.writeBoolean(response);
     }
 
-    public static RestartResponsePacket deserialize(DataInputStream stream) throws IOException {
+    @NotNull
+    @Contract("_ -> new")
+    public static RestartResponsePacket deserialize(@NotNull DataInputStream stream) throws IOException {
         int requestId = stream.readInt();
         boolean response = stream.readBoolean();
         return new RestartResponsePacket(requestId, response);
     }
 
     @Override
-    public void handle(GameRequestPacketListener listener) throws IOException {
+    public void handle(@NotNull GameRequestPacketListener listener) throws IOException {
         listener.onRestartResponse(this);
     }
 

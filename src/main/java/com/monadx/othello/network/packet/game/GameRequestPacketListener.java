@@ -1,15 +1,16 @@
 package com.monadx.othello.network.packet.game;
 
+import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
+
 import com.monadx.othello.network.packet.PacketListener;
 
-import java.io.IOException;
-
 public interface GameRequestPacketListener extends PacketListener {
-    void onUndoRequest(UndoRequestPacket packet) throws IOException;
+    void onUndoRequest(@NotNull UndoRequestPacket packet) throws IOException;
 
-    void onUndoResponse(UndoResponsePacket packet) throws IOException;
+    void onUndoResponse(@NotNull UndoResponsePacket packet) throws IOException;
 
-    void onRestartRequest(RestartRequestPacket packet) throws IOException;
+    void onRestartRequest(@NotNull RestartRequestPacket packet) throws IOException;
 
-    void onRestartResponse(RestartResponsePacket packet) throws IOException;
+    void onRestartResponse(@NotNull RestartResponsePacket packet) throws IOException;
 }

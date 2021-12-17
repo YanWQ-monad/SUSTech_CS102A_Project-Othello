@@ -1,13 +1,13 @@
 package com.monadx.othello.ai.evaluate;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.monadx.othello.chess.Board;
 import com.monadx.othello.chess.ChessColor;
 
 public class GreedyEvaluator extends Evaluator {
-    public GreedyEvaluator() {}
-
     @Override
-    public int evaluateColor(Board board, ChessColor color, int progress) {
+    public int evaluateColor(@NotNull Board board, @NotNull ChessColor color, int progress) {
         final ChessColor opposite = color.getOpposite();
         int value = 0;
         for (int x = 0; x < 8; x++)
@@ -23,8 +23,8 @@ public class GreedyEvaluator extends Evaluator {
     }
 
     @Override
-
-    public Result correctForfeit(Board board, int progress, Result result, ChessColor color) {
+    @NotNull
+    public Result correctForfeit(@NotNull Board board, int progress, @NotNull Result result, @NotNull ChessColor color) {
         return correctResult(result, color, 0);
     }
 }

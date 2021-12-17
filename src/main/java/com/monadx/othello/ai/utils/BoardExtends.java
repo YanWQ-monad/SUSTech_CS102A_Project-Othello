@@ -1,22 +1,24 @@
 package com.monadx.othello.ai.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.monadx.othello.chess.Board;
 import com.monadx.othello.chess.ChessColor;
 import com.monadx.othello.chess.Coordinate;
 import com.monadx.othello.chess.Utils;
 
 public class BoardExtends {
-    private final Board board;
-    private final ChessColor[][] table;
+    @NotNull private final Board board;
+    @NotNull private final ChessColor[][] table;
 
-    private final int[][] squareScore;
+    @NotNull private final int[][] squareScore;
 
-    private static final int[] DX8 = {-1, -1, -1, 0, 0, 1, 1, 1};
-    private static final int[] DY8 = {-1, 0, 1, -1, 1, -1, 0, 1};
-    private static final int[] DX4 = {-1, 0, 1, 0};
-    private static final int[] DY4 = {0, -1, 0, 1};
+    @NotNull private static final int[] DX8 = {-1, -1, -1, 0, 0, 1, 1, 1};
+    @NotNull private static final int[] DY8 = {-1, 0, 1, -1, 1, -1, 0, 1};
+    @NotNull private static final int[] DX4 = {-1, 0, 1, 0};
+    @NotNull private static final int[] DY4 = {0, -1, 0, 1};
 
-    public BoardExtends(Board board) {
+    public BoardExtends(@NotNull Board board) {
         this.board = board;
         this.table = board.getBoard();
 
@@ -31,7 +33,7 @@ public class BoardExtends {
                 {100, -10, 8, 6, 6, 8, -10, 100}};
     }
 
-    public int corner(ChessColor player) {
+    public int corner(@NotNull ChessColor player) {
         int count = 0;
         if (table[0][0] == player) count++;
         if (table[0][7] == player) count++;
@@ -40,7 +42,7 @@ public class BoardExtends {
         return count;
     }
 
-    public int stable(ChessColor player) {
+    public int stable(@NotNull ChessColor player) {
         boolean[][] stable = new boolean[8][8];
         stableCorner(player, 0, 0, stable);
         stableCorner(player, 0, 7, stable);
@@ -58,7 +60,7 @@ public class BoardExtends {
         return count;
     }
 
-    public int mobility(ChessColor player) {
+    public int mobility(@NotNull ChessColor player) {
         int count = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -70,7 +72,7 @@ public class BoardExtends {
         return count;
     }
 
-    public int weightedCellScore(ChessColor player) {
+    public int weightedCellScore(@NotNull ChessColor player) {
         int score = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -82,7 +84,7 @@ public class BoardExtends {
         return score;
     }
 
-    public int frontier(ChessColor player) {
+    public int frontier(@NotNull ChessColor player) {
         final ChessColor opponent = player.getOpposite();
         int count = 0;
         for (int x = 0; x < 8; x++) {
@@ -103,7 +105,7 @@ public class BoardExtends {
         return count;
     }
 
-    public int disc(ChessColor player) {
+    public int disc(@NotNull ChessColor player) {
         int count = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -115,7 +117,7 @@ public class BoardExtends {
         return count;
     }
 
-    private void stableCorner(ChessColor player, int x, int y, boolean[][] stable) {
+    private void stableCorner(@NotNull ChessColor player, int x, int y, @NotNull boolean[][] stable) {
         for (int k = 0; k < 4; k++) {
             int nx = x;
             int ny = y;

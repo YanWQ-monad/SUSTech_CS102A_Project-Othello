@@ -3,16 +3,20 @@ package com.monadx.othello.save;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import com.monadx.othello.chess.*;
 
 public class RecordLoader {
-    private final String fileName;
+    @NotNull private final String fileName;
 
-    public RecordLoader(String fileName) {
+    public RecordLoader(@NotNull String fileName) {
         this.fileName = fileName;
     }
 
+    @NotNull
+    @Contract(" -> new")
     public Game load() throws SaveException {
         GameRecord record;
         try {

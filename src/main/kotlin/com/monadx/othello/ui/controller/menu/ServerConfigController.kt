@@ -1,4 +1,4 @@
-package com.monadx.othello.ui.controller.menu;
+package com.monadx.othello.ui.controller.menu
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf

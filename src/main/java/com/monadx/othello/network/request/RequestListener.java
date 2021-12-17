@@ -1,7 +1,9 @@
 package com.monadx.othello.network.request;
 
-public interface RequestListener {
-    void onUndoRequest(RequestManager.RequestResultConsumer onResponse);
+import org.jetbrains.annotations.NotNull;
 
-    void onRestartRequest(RequestManager.RequestResultConsumer onResponse);
+public interface RequestListener {
+    void onUndoRequest(@NotNull RequestManager.RequestResultConsumer onResponse);
+
+    void onRestartRequest(@NotNull RequestManager.RequestResultConsumer onResponse);
 }

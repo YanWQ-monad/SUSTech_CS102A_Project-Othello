@@ -41,7 +41,7 @@ fun UniversalBoard(
 
         GameBoard(
             controller.state.board,
-            controller.state.status.placable.value,
+            controller.state.status.placeable.value,
             onClick = { x, y -> controller.onClick(x, y) },
         )
 

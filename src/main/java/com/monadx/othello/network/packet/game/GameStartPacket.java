@@ -3,6 +3,8 @@ package com.monadx.othello.network.packet.game;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import com.monadx.othello.chess.ChessColor;
 import com.monadx.othello.network.packet.Packet;
@@ -10,28 +12,30 @@ import com.monadx.othello.network.packet.Packet;
 public class GameStartPacket extends Packet<GamePacketListener> {
     public static final int PACKET_ID = 0x01;
 
-    public final ChessColor color;
+    @NotNull public final ChessColor color;
     public final int boardHash;
 
-    public GameStartPacket(ChessColor color, int boardHash) {
+    public GameStartPacket(@NotNull ChessColor color, int boardHash) {
         this.color = color;
         this.boardHash = boardHash;
     }
 
-    public static GameStartPacket deserialize(DataInputStream stream) throws IOException {
+    @NotNull
+    @Contract("_ -> new")
+    public static GameStartPacket deserialize(@NotNull DataInputStream stream) throws IOException {
         ChessColor color = ChessColor.deserialize(stream);
         int boardHash = stream.readInt();
         return new GameStartPacket(color, boardHash);
     }
 
     @Override
-    public void serialize(DataOutputStream stream) throws IOException {
+    public void serialize(@NotNull DataOutputStream stream) throws IOException {
         color.serialize(stream);
         stream.writeInt(boardHash);
     }
 
     @Override
-    public void handle(GamePacketListener listener) throws IOException {
+    public void handle(@NotNull GamePacketListener listener) throws IOException {
         listener.handleGameStart(this);
     }
 

@@ -3,9 +3,13 @@ package com.monadx.othello.chess;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-public record Step(ChessColor player, int x, int y) {
-    public static Step deserialize(DataInput in) throws IOException {
+public record Step(@NotNull ChessColor player, int x, int y) {
+    @NotNull
+    @Contract("_ -> new")
+    public static Step deserialize(@NotNull DataInput in) throws IOException {
         ChessColor player = ChessColor.deserialize(in);
         int x = in.readByte();
         int y = in.readByte();
@@ -15,7 +19,7 @@ public record Step(ChessColor player, int x, int y) {
         return new Step(player, x, y);
     }
 
-    public void serialize(DataOutput out) throws IOException {
+    public void serialize(@NotNull DataOutput out) throws IOException {
         player.serialize(out);
         out.writeByte(x);
         out.writeByte(y);

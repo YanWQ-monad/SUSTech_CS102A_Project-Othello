@@ -3,23 +3,27 @@ package com.monadx.othello.network.packet.handshake;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import com.monadx.othello.network.packet.Packet;
 
 public class ServerboundHelloPacket extends Packet<ServerPacketListener> {
     public static final int PACKET_ID = 0x01;
 
-    public static ServerboundHelloPacket deserialize(DataInputStream stream) throws IOException {
+    @NotNull
+    @Contract(value = "_ -> new", pure = true)
+    public static ServerboundHelloPacket deserialize(@NotNull DataInputStream stream) throws IOException {
         return new ServerboundHelloPacket();
     }
 
     @Override
-    public void serialize(DataOutputStream stream) throws IOException {
+    public void serialize(@NotNull DataOutputStream stream) throws IOException {
 
     }
 
     @Override
-    public void handle(ServerPacketListener listener) throws IOException {
+    public void handle(@NotNull ServerPacketListener listener) throws IOException {
         listener.handleHello(this);
     }
 

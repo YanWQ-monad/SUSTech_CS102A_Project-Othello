@@ -1,12 +1,14 @@
 package com.monadx.othello.ai.evaluate;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.monadx.othello.ai.utils.BoardExtends;
 import com.monadx.othello.chess.Board;
 import com.monadx.othello.chess.ChessColor;
 
 public class HeuristicEvaluator extends Evaluator {
     @Override
-    public int evaluateColor(Board board, ChessColor color, int progress) {
+    public int evaluateColor(@NotNull Board board, @NotNull ChessColor color, int progress) {
         BoardExtends boardExtends = new BoardExtends(board);
 
         int mobility = evalMobility(boardExtends, color);
@@ -18,25 +20,26 @@ public class HeuristicEvaluator extends Evaluator {
     }
 
     @Override
-    public Result correctForfeit(Board board, int progress, Result result, ChessColor color) {
+    @NotNull
+    public Result correctForfeit(@NotNull Board board, int progress, @NotNull Result result, @NotNull ChessColor color) {
         return correctResult(result, color, -100);
     }
 
-    int evalMobility(BoardExtends board, ChessColor color) {
+    int evalMobility(@NotNull BoardExtends board, @NotNull ChessColor color) {
         int myMobility = board.mobility(color);
         int opponentMobility = board.mobility(color.getOpposite());
 
         return 100 * (myMobility - opponentMobility) / (myMobility + opponentMobility + 1);
     }
 
-    int evalDisc(BoardExtends board, ChessColor color) {
+    int evalDisc(@NotNull BoardExtends board, @NotNull ChessColor color) {
         int myDisc = board.disc(color);
         int opponentDisc = board.disc(color.getOpposite());
 
         return 100 * (myDisc - opponentDisc) / (myDisc + opponentDisc);
     }
 
-    int evalCorner(BoardExtends board, ChessColor color) {
+    int evalCorner(@NotNull BoardExtends board, @NotNull ChessColor color) {
         int myCorner = board.corner(color);
         int opponentCorner = board.corner(color.getOpposite());
 

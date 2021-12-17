@@ -3,17 +3,18 @@ package com.monadx.othello.save;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
 
 import com.monadx.othello.chess.Game;
 
 public class RecordSaver {
-    private final String fileName;
+    @NotNull private final String fileName;
 
-    public RecordSaver(String fileName) {
+    public RecordSaver(@NotNull String fileName) {
         this.fileName = fileName;
     }
 
-    public void save(Game game) throws SaveException {
+    public void save(@NotNull Game game) throws SaveException {
         GameRecord record = new GameRecord(
                 game.getStepList(),
                 game.getBoard().hashCode(),

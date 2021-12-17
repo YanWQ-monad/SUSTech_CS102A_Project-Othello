@@ -1,23 +1,26 @@
 package com.monadx.othello.network.connection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Server implements Closeable {
     private final static Logger LOGGER = LogManager.getLogger(Server.class);
 
-    ServerSocket serverSocket;
+    @NotNull private final ServerSocket serverSocket;
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         LOGGER.info("Server started");
     }
 
+    @Nullable
     public Channel waitForConnection() throws IOException {
         LOGGER.info("Server listening for connection...");
 

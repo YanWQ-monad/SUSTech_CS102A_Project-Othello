@@ -1,3 +1,6 @@
 package com.monadx.othello.chess;
 
-public record Snapshot(Board board, ChessColor currentPlayer, Game.Status status) {}
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public record Snapshot(@NotNull Board board, @Nullable ChessColor currentPlayer, @NotNull Game.Status status) {}

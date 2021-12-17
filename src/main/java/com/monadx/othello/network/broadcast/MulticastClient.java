@@ -1,24 +1,25 @@
 package com.monadx.othello.network.broadcast;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.*;
 import java.util.function.Consumer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class MulticastClient implements Closeable {
     private final static Logger LOGGER = LogManager.getLogger(MulticastClient.class);
 
     static final int BUFFER_SIZE = 1024;
 
-    InetAddress address;
-    MulticastSocket socket;
+    @NotNull private final InetAddress address;
+    @NotNull private final MulticastSocket socket;
 
-    Consumer<Packet> onMessage;
-    Thread thread;
+    @NotNull private final Consumer<Packet> onMessage;
+    @NotNull private final Thread thread;
 
-    public MulticastClient(InetAddress address, int port, Consumer<Packet> onMessage) throws IOException {
+    public MulticastClient(@NotNull InetAddress address, int port, @NotNull Consumer<Packet> onMessage) throws IOException {
         this.address = address;
         socket = new MulticastSocket(port);
         socket.joinGroup(address);
@@ -72,5 +73,5 @@ public class MulticastClient implements Closeable {
         } catch (InterruptedException ignored) {}
     }
 
-    public static record Packet(MulticastMessage message, InetAddress sender) {}
+    public static record Packet(@NotNull MulticastMessage message, @NotNull InetAddress sender) {}
 }

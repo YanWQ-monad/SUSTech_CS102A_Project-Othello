@@ -2,6 +2,8 @@ package com.monadx.othello.network.packet;
 
 import java.io.*;
 import java.util.zip.CRC32;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public record RawPacket(
     int packetId,
@@ -9,18 +11,24 @@ public record RawPacket(
     long checksum,
     byte[] data
 ) {
-    public static RawPacket createFrom(int packetId, byte[] data) {
+    @NotNull
+    @Contract("_, _ -> new")
+    public static RawPacket createFrom(int packetId, @NotNull byte[] data) {
         return new RawPacket(packetId, data.length, calculateChecksum(data), data);
     }
 
-    public static <T extends PacketListener> RawPacket createFrom(Packet<T> packet) throws IOException {
+    @NotNull
+    @Contract("_ -> new")
+    public static <T extends PacketListener> RawPacket createFrom(@NotNull Packet<T> packet) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream stream = new DataOutputStream(byteStream);
         packet.serialize(stream);
         return RawPacket.createFrom(packet.getPacketId(), byteStream.toByteArray());
     }
 
-    public static RawPacket readFrom(DataInput stream) throws IOException {
+    @NotNull
+    @Contract("_ -> new")
+    public static RawPacket readFrom(@NotNull DataInput stream) throws IOException {
         int packetId = stream.readInt();
         int length = stream.readInt();
         long checksum = stream.readLong();
@@ -30,7 +38,7 @@ public record RawPacket(
         return new RawPacket(packetId, length, checksum, data);
     }
 
-    public void writeTo(DataOutput stream) throws IOException {
+    public void writeTo(@NotNull DataOutput stream) throws IOException {
         stream.writeInt(packetId);
         stream.writeInt(length);
         stream.writeLong(checksum);
@@ -41,7 +49,7 @@ public record RawPacket(
         return calculateChecksum(data) == checksum;
     }
 
-    private static long calculateChecksum(byte[] data) {
+    private static long calculateChecksum(@NotNull byte[] data) {
         CRC32 crc = new CRC32();
         crc.update(data);
         return crc.getValue();

@@ -3,6 +3,8 @@ package com.monadx.othello.network.packet.game;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import com.monadx.othello.chess.ChessColor;
 import com.monadx.othello.network.packet.Packet;
@@ -12,10 +14,10 @@ public class ChessPlacePacket extends Packet<GamePacketListener> {
 
     public final int x;
     public final int y;
-    public final ChessColor color;
+    @NotNull public final ChessColor color;
     public final int boardHash;
 
-    public ChessPlacePacket(int x, int y, ChessColor color, int boardHash) {
+    public ChessPlacePacket(int x, int y, @NotNull ChessColor color, int boardHash) {
         this.x = x;
         this.y = y;
         this.color = color;
@@ -23,14 +25,16 @@ public class ChessPlacePacket extends Packet<GamePacketListener> {
     }
 
     @Override
-    public void serialize(DataOutputStream stream) throws IOException {
+    public void serialize(@NotNull DataOutputStream stream) throws IOException {
         stream.writeByte(x);
         stream.writeByte(y);
         color.serialize(stream);
         stream.writeInt(boardHash);
     }
 
-    public static ChessPlacePacket deserialize(DataInputStream stream) throws IOException {
+    @NotNull
+    @Contract("_ -> new")
+    public static ChessPlacePacket deserialize(@NotNull DataInputStream stream) throws IOException {
         int x = stream.readByte();
         int y = stream.readByte();
         ChessColor color = ChessColor.deserialize(stream);
@@ -39,7 +43,7 @@ public class ChessPlacePacket extends Packet<GamePacketListener> {
     }
 
     @Override
-    public void handle(GamePacketListener listener) throws IOException {
+    public void handle(@NotNull GamePacketListener listener) throws IOException {
         listener.handleChessPlace(this);
     }
 

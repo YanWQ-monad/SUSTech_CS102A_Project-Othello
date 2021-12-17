@@ -1,14 +1,16 @@
 package com.monadx.othello.chess;
 
 import java.util.Random;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public class Board {
-    private final ChessColor[][] board;
+    @NotNull private final ChessColor[][] board;
 
     private int hash;
 
-    private static final int[] DX = {-1, -1, -1, 0, 0, 1, 1, 1};
-    private static final int[] DY = {-1, 0, 1, -1, 1, -1, 0, 1};
+    @NotNull private static final int[] DX = {-1, -1, -1, 0, 0, 1, 1, 1};
+    @NotNull private static final int[] DY = {-1, 0, 1, -1, 1, -1, 0, 1};
 
     public Board() {
         board = new ChessColor[8][8];
@@ -33,6 +35,8 @@ public class Board {
                 ^ ZobristHashing.HASH[4][3][ChessColor.BLACK.getId()] ^ ZobristHashing.HASH[4][3][ChessColor.EMPTY.getId()];
     }
 
+    @NotNull
+    @Contract(value = " -> new", pure = true)
     public Board copy() {
         Board clone = new Board();
         clone.setBoard(board);
@@ -40,13 +44,13 @@ public class Board {
         return clone;
     }
 
-    public void loadFrom(Board board) {
+    public void loadFrom(@NotNull Board board) {
         setBoard(board.board);
         hash = board.hash;
     }
 
     // Checks whether the given color of the chess can place on the position
-    public boolean checkPlaceable(Coordinate coordinate, ChessColor color) {
+    public boolean checkPlaceable(@NotNull Coordinate coordinate, @NotNull ChessColor color) {
         if (board[coordinate.x()][coordinate.y()] != ChessColor.EMPTY)
             return false;
 
@@ -69,7 +73,7 @@ public class Board {
 
     // Place a chess on the position
     // Return true if the chess is placed successfully
-    public boolean place(Coordinate coordinate, ChessColor color) {
+    public boolean place(@NotNull Coordinate coordinate, @NotNull ChessColor color) {
         int x = coordinate.x(), y = coordinate.y();
         if (board[x][y] != ChessColor.EMPTY)
             return false;
@@ -114,7 +118,7 @@ public class Board {
         return count;
     }
 
-    public void forceFlip(Coordinate coordinate) {
+    public void forceFlip(@NotNull Coordinate coordinate) {
         int x = coordinate.x(), y = coordinate.y();
         ChessColor nextColor = switch (board[x][y]) {
             case EMPTY -> ChessColor.BLACK;
@@ -132,19 +136,20 @@ public class Board {
         return hash;
     }
 
+    @NotNull
     public ChessColor[][] getBoard() {
         return board;
     }
 
     // This method does not maintain `hash`, please take care of it
-    private void setBoard(ChessColor[][] board) {
+    private void setBoard(@NotNull ChessColor[][] board) {
         for (int x = 0; x < 8; x++) {
             System.arraycopy(board[x], 0, this.board[x], 0, 8);
         }
     }
 
     private static class ZobristHashing {
-        private static final int[][][] HASH = new int[8][8][3];
+        @NotNull private static final int[][][] HASH = new int[8][8][3];
         private static final int EMPTY_HASH;
 
         static {

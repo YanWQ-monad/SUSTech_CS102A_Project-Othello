@@ -4,16 +4,19 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FileChooser {
-    private final Action action;
-    private final String filenameFilter;
+    @NotNull private final Action action;
+    @NotNull private final String filenameFilter;
 
-    public FileChooser(Action action, String filenameFilter) {
+    public FileChooser(@NotNull Action action, @NotNull String filenameFilter) {
         this.action = action;
         this.filenameFilter = filenameFilter;
     }
 
+    @Nullable
     public String choose() {
         FileDialog dialog = new FileDialog((Frame) null, "", action.getDialogMode());
 

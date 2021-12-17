@@ -18,7 +18,6 @@ import com.monadx.othello.ui.Config.BLACK_CHESS_COLOR
 import com.monadx.othello.ui.Config.STATUS_ICON_BORDER_WIDTH
 import com.monadx.othello.ui.Config.STATUS_ICON_SIZE
 import com.monadx.othello.ui.Config.STATUS_SCORE_BAR_HEIGHT
-import com.monadx.othello.ui.Config.STATUS_SCORE_SIZE
 import com.monadx.othello.ui.Config.WHITE_CHESS_COLOR
 
 object StatusConfig {
@@ -33,7 +32,7 @@ class GameStatusState {
     val black = PlayerState()
     val white = PlayerState()
 
-    val placable = mutableStateOf(false)
+    val placeable = mutableStateOf(false)
 }
 
 class PlayerState {
@@ -138,7 +137,7 @@ fun PlayerIcon(status: PlayerState.Status, color: Color) {
             )
     } else {
         Modifier
-    };
+    }
 
     Box(
         Modifier

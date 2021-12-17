@@ -2,6 +2,7 @@ package com.monadx.othello.ai.searcher;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,21 +14,22 @@ import com.monadx.othello.chess.Coordinate;
 import com.monadx.othello.chess.Utils;
 
 public class MinimaxSearcher extends Searcher {
-    private final Evaluator evaluator;
-    private final Map<Integer, Evaluator.Result> hash;
+    @NotNull private final Evaluator evaluator;
+    @NotNull private final Map<Integer, Evaluator.Result> hash;
     private final int maxDepth;
 
-    public MinimaxSearcher(Evaluator evaluator, int maxDepth) {
+    public MinimaxSearcher(@NotNull Evaluator evaluator, int maxDepth) {
         this.evaluator = evaluator;
         this.hash = new HashMap<>();
         this.maxDepth = maxDepth;
     }
 
-    public MinimaxSearcher(Evaluator evaluator) {
+    public MinimaxSearcher(@NotNull Evaluator evaluator) {
         this(evaluator, 8);
     }
 
-    public Collector recursiveSearch(Board board, ChessColor color, Collector collector, int quota, int progress) {
+    @NotNull
+    public Collector recursiveSearch(@NotNull Board board, @NotNull ChessColor color, @NotNull Collector collector, int quota, int progress) {
         int hashCode = board.hashCode();
         if (hash.containsKey(hashCode)) {
             Evaluator.Result result = hash.get(hashCode);
@@ -58,8 +60,7 @@ public class MinimaxSearcher extends Searcher {
 
             if (!opponentHasMove) {
                 result = evaluator.getEndedValue(board);
-            }
-            else if (quota > 0) {
+            } else if (quota > 0) {
                 Collector child_collector = recursiveSearch(
                         board,
                         color.getOpposite(),
@@ -71,6 +72,7 @@ public class MinimaxSearcher extends Searcher {
                 result = evaluator.evaluate(board, progress);
             }
 
+            assert result != null;
             collector.tryUpdate(new Coordinate(-1, -1), evaluator.correctForfeit(board, progress, result, color));
         }
 
@@ -90,6 +92,7 @@ public class MinimaxSearcher extends Searcher {
                 result = move.score();
             }
 
+            assert result != null;
             collector.tryUpdate(move.coordinate(), result);
             if (collector.shouldCutOff()) {
                 break;
@@ -102,7 +105,8 @@ public class MinimaxSearcher extends Searcher {
     }
 
     @Override
-    public SearchResult search(Board board, ChessColor color, int progress) {
+    @NotNull
+    public SearchResult search(@NotNull Board board, @NotNull ChessColor color, int progress) {
         hash.clear();
         int maxQuota = (64 - 1) - progress;
         Collector collector = recursiveSearch(board, color, Collector.fromChessColor(color), Math.min(maxQuota, maxDepth), progress);
@@ -112,27 +116,28 @@ public class MinimaxSearcher extends Searcher {
     private static record PossibleMove(Board board, Coordinate coordinate, Evaluator.Result score) {}
 
     private static class Collector {
-        private Coordinate best = null;
-        private Evaluator.Result score = null;
-        private final Comparator originalComparator;
+        @Nullable private Coordinate best = null;
+        @Nullable private Evaluator.Result score = null;
+        @NotNull private final Comparator comparator;
+        @NotNull private final Comparator originalComparator;
 
         private int alpha;
         private int beta;
 
-        private final Comparator comparator;
-
-        Collector(Comparator comparator, Comparator originalComparator, int alpha, int beta) {
+        Collector(@NotNull Comparator comparator, @NotNull Comparator originalComparator, int alpha, int beta) {
             this.comparator = comparator;
             this.originalComparator = originalComparator;
             this.alpha = alpha;
             this.beta = beta;
         }
 
-        Collector(Comparator comparator) {
+        Collector(@NotNull Comparator comparator) {
             this(comparator, comparator, Integer.MIN_VALUE, Integer.MAX_VALUE);
         }
 
-        public static Collector fromChessColor(ChessColor color) {
+        @NotNull
+        @Contract("_ -> new")
+        public static Collector fromChessColor(@NotNull ChessColor color) {
             return switch (color) {
                 case BLACK -> new Collector(Comparator.BLACK);
                 case WHITE -> new Collector(Comparator.WHITE);
@@ -140,11 +145,13 @@ public class MinimaxSearcher extends Searcher {
             };
         }
 
+        @NotNull
+        @Contract(value = " -> new", pure = true)
         public Collector createNextLayer() {
             return new Collector(comparator.getOpposite(), originalComparator, alpha, beta);
         }
 
-        public boolean tryUpdate(Coordinate coordinate, Evaluator.Result score) {
+        public boolean tryUpdate(@NotNull Coordinate coordinate, @NotNull Evaluator.Result score) {
             if (comparator.isBetter(this.score, score)) {
                 this.best = coordinate;
                 this.score = score;
@@ -165,19 +172,26 @@ public class MinimaxSearcher extends Searcher {
             return alpha >= beta;
         }
 
+        @NotNull
         public Comparator getComparator() {
             return comparator;
         }
 
+        @Nullable
         public Coordinate getBest() {
             return best;
         }
 
+        @Nullable
         public Evaluator.Result getScore() {
             return score;
         }
 
+        @NotNull
+        @Contract(" -> new")
         public SearchResult toSearchResult() {
+            assert best != null;
+            assert score != null;
             return new SearchResult(best, score);
         }
 

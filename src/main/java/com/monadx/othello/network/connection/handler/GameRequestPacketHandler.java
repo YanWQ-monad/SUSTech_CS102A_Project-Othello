@@ -1,15 +1,18 @@
 package com.monadx.othello.network.connection.handler;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.monadx.othello.network.packet.game.*;
 
 public class GameRequestPacketHandler extends PacketHandler<GameRequestPacketListener> {
-    private static final PacketMapping<GameRequestPacketListener> map = new PacketMapping<>();
+    @NotNull private static final PacketMapping<GameRequestPacketListener> map = new PacketMapping<>();
 
-    public GameRequestPacketHandler(GameRequestPacketListener listener) {
+    public GameRequestPacketHandler(@NotNull GameRequestPacketListener listener) {
         this.listener = listener;
     }
 
     @Override
+    @NotNull
     PacketMapping<GameRequestPacketListener> getMapping() {
         return map;
     }

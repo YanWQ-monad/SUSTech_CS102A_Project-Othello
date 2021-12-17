@@ -1,6 +1,7 @@
 package com.monadx.othello.network.connection.connection;
 
 import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
 
 import com.monadx.othello.network.connection.handler.ClientHandshakePacketHandler;
 import com.monadx.othello.network.packet.PacketStream;
@@ -9,17 +10,17 @@ import com.monadx.othello.network.packet.handshake.ClientPacketListener;
 import com.monadx.othello.network.packet.handshake.ServerboundHelloPacket;
 
 public class ClientHandshakeConnection {
-    PacketStream stream;
-    Stage stage = Stage.START;
+    @NotNull private final PacketStream stream;
+    @NotNull private Stage stage = Stage.START;
 
-    public ClientHandshakeConnection(PacketStream stream) {
+    public ClientHandshakeConnection(@NotNull PacketStream stream) {
         this.stream = stream;
     }
 
     public void runUntilComplete() throws IOException {
         ClientHandshakePacketHandler handler = new ClientHandshakePacketHandler(new ClientPacketListener() {
             @Override
-            public void handleHello(ClientboundHelloPacket packet) {
+            public void handleHello(@NotNull ClientboundHelloPacket packet) {
                 stage = Stage.FINISHED;
             }
         });
@@ -30,6 +31,7 @@ public class ClientHandshakeConnection {
         }
     }
 
+    @NotNull
     public PacketStream getStream() {
         return stream;
     }

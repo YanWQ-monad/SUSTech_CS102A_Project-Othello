@@ -1,15 +1,16 @@
 package com.monadx.othello.network.request;
 
-import com.monadx.othello.network.connection.connection.GameConnection;
-import com.monadx.othello.network.packet.Packet;
-import com.monadx.othello.network.packet.game.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import com.monadx.othello.network.connection.connection.GameConnection;
+import com.monadx.othello.network.packet.Packet;
+import com.monadx.othello.network.packet.game.*;
 
 public class RequestManager {
     private final static Logger LOGGER = LogManager.getLogger(RequestManager.class);
@@ -17,40 +18,40 @@ public class RequestManager {
     public final int UNDO_REQUEST_TYPE_ID = 0x01;
     public final int RESTART_REQUEST_TYPE_ID = 0x02;
 
-    Random random = new Random();
-    GameConnection connection;
-    RequestListener listener;
+    @NotNull private final Random random = new Random();
+    @NotNull private final GameConnection connection;
+    @NotNull private final RequestListener listener;
 
-    Map<ItemKey, RequestResultConsumer> map = new HashMap<>();
+    @NotNull private final Map<ItemKey, RequestResultConsumer> map = new HashMap<>();
 
-    public RequestManager(GameConnection connection, RequestListener listener) {
+    public RequestManager(@NotNull GameConnection connection, @NotNull RequestListener listener) {
         this.connection = connection;
         this.listener = listener;
 
         connection.registerRequestListener(new GameRequestPacketListener() {
             @Override
-            public void onUndoRequest(UndoRequestPacket packet) {
+            public void onUndoRequest(@NotNull UndoRequestPacket packet) {
                 listener.onUndoRequest((response) -> sendWithHandlingException(new UndoResponsePacket(packet.requestId, response)));
             }
 
             @Override
-            public void onUndoResponse(UndoResponsePacket packet) {
+            public void onUndoResponse(@NotNull UndoResponsePacket packet) {
                 handleResponse(packet.requestId, UNDO_REQUEST_TYPE_ID, packet.response);
             }
 
             @Override
-            public void onRestartRequest(RestartRequestPacket packet) {
+            public void onRestartRequest(@NotNull RestartRequestPacket packet) {
                 listener.onRestartRequest((response) -> sendWithHandlingException(new RestartResponsePacket(packet.requestId, response)));
             }
 
             @Override
-            public void onRestartResponse(RestartResponsePacket packet) {
+            public void onRestartResponse(@NotNull RestartResponsePacket packet) {
                 handleResponse(packet.requestId, RESTART_REQUEST_TYPE_ID, packet.response);
             }
         });
     }
 
-    public void sendWithHandlingException(Packet<GameRequestPacketListener> packet) {
+    public void sendWithHandlingException(@NotNull Packet<GameRequestPacketListener> packet) {
         try {
             connection.send(packet);
         } catch (IOException e) {
@@ -58,13 +59,13 @@ public class RequestManager {
         }
     }
 
-    public void sendUndoRequest(RequestResultConsumer onResponse) throws IOException {
+    public void sendUndoRequest(@NotNull RequestResultConsumer onResponse) throws IOException {
         int requestId = random.nextInt();
         map.put(new ItemKey(requestId, UNDO_REQUEST_TYPE_ID), onResponse);
         connection.send(new UndoRequestPacket(requestId));
     }
 
-    public void sendRestartRequest(RequestResultConsumer onResponse) throws IOException {
+    public void sendRestartRequest(@NotNull RequestResultConsumer onResponse) throws IOException {
         int requestId = random.nextInt();
         map.put(new ItemKey(requestId, RESTART_REQUEST_TYPE_ID), onResponse);
         connection.send(new RestartRequestPacket(requestId));

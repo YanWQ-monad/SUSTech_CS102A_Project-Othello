@@ -1,11 +1,13 @@
 package com.monadx.othello.save;
 
+import org.jetbrains.annotations.NotNull;
+
 public class SaveException extends Exception {
-    public SaveException(String message) {
+    public SaveException(@NotNull String message) {
         super(message);
     }
 
-    public SaveException(String message, Throwable cause) {
+    public SaveException(@NotNull String message, @NotNull Throwable cause) {
         super(message, cause);
     }
 }

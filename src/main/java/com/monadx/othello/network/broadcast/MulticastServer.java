@@ -1,7 +1,5 @@
 package com.monadx.othello.network.broadcast;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,23 +8,25 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class MulticastServer implements Closeable {
     private static final Logger LOGGER = LogManager.getLogger(MulticastServer.class);
 
-    InetAddress address;
-    MulticastSocket socket;
-    InetSocketAddress group;
-    DatagramPacket packet;
+    @NotNull private final InetAddress address;
+    @NotNull private final MulticastSocket socket;
+    @NotNull private final DatagramPacket packet;
 
-    Timer timer;
+    @NotNull private final Timer timer;
 
-    public MulticastServer(InetAddress address, int port, MulticastMessage message) throws IOException {
+    public MulticastServer(@NotNull InetAddress address, int port, @NotNull MulticastMessage message) throws IOException {
         this.address = address;
         socket = new MulticastSocket(port);
-        group = new InetSocketAddress(address, port);
         socket.joinGroup(address);
 
+        InetSocketAddress group = new InetSocketAddress(address, port);
         byte[] bytes = message.toBytes();
         packet = new DatagramPacket(bytes, bytes.length, group);
 

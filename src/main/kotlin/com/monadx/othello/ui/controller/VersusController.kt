@@ -22,7 +22,7 @@ class VersusController(appState: AppState): GamingController(appState) {
 
     init {
         super.syncAll()
-        state.status.placable.value = true
+        state.status.placeable.value = true
     }
 
     @Composable
