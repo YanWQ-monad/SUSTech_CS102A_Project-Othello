@@ -12,13 +12,14 @@ public class HeuristicEvaluator extends Evaluator {
         int mobility = evalMobility(boardExtends, color);
         int disc = evalDisc(boardExtends, color);
         int corner = evalCorner(boardExtends, color);
+        int weight = boardExtends.weightedCellScore(color);
 
-        return 100 * corner + 3 * mobility + disc;
+        return 300 * corner + 20 * mobility + disc * 3 + weight;
     }
 
     @Override
     public Result correctForfeit(Board board, int progress, Result result, ChessColor color) {
-        return correctResult(result, color, -10000);
+        return correctResult(result, color, -100);
     }
 
     int evalMobility(BoardExtends board, ChessColor color) {

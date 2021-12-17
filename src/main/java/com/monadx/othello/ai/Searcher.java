@@ -44,12 +44,18 @@ public class Searcher {
         if (moves.isEmpty()) {
             Evaluator.Result result;
 
-            if (quota > 0) {
+            boolean opponentHasMove = Arrays.stream(Utils.POSITION_LIST)
+                    .anyMatch(coordinate -> board.checkPlaceable(coordinate, color.getOpposite()));
+
+            if (!opponentHasMove) {
+                result = evaluator.getEndedValue(board);
+            }
+            else if (quota > 0) {
                 Collector child_collector = search(
                         board,
                         color.getOpposite(),
                         collector.createNextLayer(),
-                        quota - 1,
+                        quota,
                         progress);
                 result = child_collector.getScore();
             } else {
