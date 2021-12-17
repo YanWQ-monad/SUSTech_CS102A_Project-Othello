@@ -15,10 +15,16 @@ import com.monadx.othello.chess.Utils;
 public class MinimaxSearcher extends Searcher {
     private final Evaluator evaluator;
     private final Map<Integer, Evaluator.Result> hash;
+    private final int maxDepth;
 
-    public MinimaxSearcher(Evaluator evaluator) {
+    public MinimaxSearcher(Evaluator evaluator, int maxDepth) {
         this.evaluator = evaluator;
         this.hash = new HashMap<>();
+        this.maxDepth = maxDepth;
+    }
+
+    public MinimaxSearcher(Evaluator evaluator) {
+        this(evaluator, 8);
     }
 
     public Collector recursiveSearch(Board board, ChessColor color, Collector collector, int quota, int progress) {
@@ -99,7 +105,7 @@ public class MinimaxSearcher extends Searcher {
     public SearchResult search(Board board, ChessColor color, int progress) {
         hash.clear();
         int maxQuota = (64 - 1) - progress;
-        Collector collector = recursiveSearch(board, color, Collector.fromChessColor(color), Math.min(maxQuota, 8), progress);
+        Collector collector = recursiveSearch(board, color, Collector.fromChessColor(color), Math.min(maxQuota, maxDepth), progress);
         return collector.toSearchResult();
     }
 
