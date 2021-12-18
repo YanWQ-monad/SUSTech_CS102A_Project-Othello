@@ -36,7 +36,7 @@ public class MinimaxSearcher extends Searcher {
             // since the second and later layers do not need coordinate,
             // and the first layer won't hit the hash,
             // so we can make up an arbitrary coordinate
-            collector.tryUpdate(new Coordinate(-1, -1), result);
+            collector.tryUpdate(Coordinate.NULL_PLACEHOLDER, result);
             return collector;
         }
 
@@ -73,7 +73,7 @@ public class MinimaxSearcher extends Searcher {
             }
 
             assert result != null;
-            collector.tryUpdate(new Coordinate(-1, -1), evaluator.correctForfeit(board, progress, result, color));
+            collector.tryUpdate(Coordinate.NULL_PLACEHOLDER, evaluator.correctForfeit(board, progress, result, color));
         }
 
         for (PossibleMove move : moves) {

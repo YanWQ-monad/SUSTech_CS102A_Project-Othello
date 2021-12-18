@@ -64,7 +64,7 @@ public class BoardExtends {
         int count = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                if (board.checkPlaceable(new Coordinate(x, y), player)) {
+                if (board.checkPlaceable(Coordinate.of(x, y), player)) {
                     count++;
                 }
             }

@@ -34,7 +34,7 @@ public class RecordLoader {
                 throw new SaveException(String.format("Invalid player: %s, expected: %s", player, game.getCurrentPlayer()));
             }
 
-            game.place(new Coordinate(step.x(), step.y()));
+            game.place(Coordinate.of(step.x(), step.y()));
         }
 
         if (game.getBoard().hashCode() != record.boardHash()) {

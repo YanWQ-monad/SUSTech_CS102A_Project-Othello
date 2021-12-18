@@ -20,7 +20,7 @@ public class Utils {
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                list[x + y * 8] = new Coordinate(x, y);
+                list[x + y * 8] = Coordinate.of(x, y);
             }
         }
 
