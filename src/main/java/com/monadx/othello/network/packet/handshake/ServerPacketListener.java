@@ -7,4 +7,6 @@ import com.monadx.othello.network.packet.PacketListener;
 
 public interface ServerPacketListener extends PacketListener {
     void handleHello(@NotNull ServerboundHelloPacket packet) throws IOException;
+
+    void handlePasswordVerify(@NotNull ServerboundPasswordVerifyPacket packet) throws IOException;
 }

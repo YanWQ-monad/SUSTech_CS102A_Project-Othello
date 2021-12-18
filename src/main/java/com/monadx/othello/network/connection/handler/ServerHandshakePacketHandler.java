@@ -1,5 +1,6 @@
 package com.monadx.othello.network.connection.handler;
 
+import com.monadx.othello.network.packet.handshake.ServerboundPasswordVerifyPacket;
 import org.jetbrains.annotations.NotNull;
 
 import com.monadx.othello.network.packet.handshake.ServerPacketListener;
@@ -20,5 +21,6 @@ public class ServerHandshakePacketHandler extends PacketHandler<ServerPacketList
 
     static {
         register(map, ServerboundHelloPacket.PACKET_ID, ServerboundHelloPacket.class.getName(), ServerboundHelloPacket::deserialize);
+        register(map, ServerboundPasswordVerifyPacket.PACKET_ID, ServerboundPasswordVerifyPacket.class.getName(), ServerboundPasswordVerifyPacket::deserialize);
     }
 }

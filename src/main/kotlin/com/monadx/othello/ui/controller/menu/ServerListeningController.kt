@@ -42,7 +42,7 @@ class ServerListeningController(appState: AppState, val serverName: String, val 
                     val channel = server.waitForConnection() ?: continue
                     val packetStream = PacketStream(channel)
                     val connection = ServerHandshakeConnection(packetStream)
-                    val isSuccess = connection.runUntilComplete()
+                    val isSuccess = connection.runUntilComplete("")
                     if (!isSuccess) {
                         LOGGER.error("Server handshake failed")
                         continue

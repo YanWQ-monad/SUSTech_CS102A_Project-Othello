@@ -15,10 +15,14 @@ public class ClientboundHelloPacket extends Packet<ClientPacketListener> {
 
     @NotNull public final byte[] publicKeyEncoded;
     @NotNull public final byte[] nonce;
+    @NotNull public final byte[] salt;
+    @NotNull public final byte[] hashedPassword;
 
-    public ClientboundHelloPacket(@NotNull byte[] publicKeyEncoded, @NotNull byte[] nonce) {
+    public ClientboundHelloPacket(@NotNull byte[] publicKeyEncoded, @NotNull byte[] nonce, @NotNull byte[] salt, @NotNull byte[] hashedPassword) {
         this.publicKeyEncoded = publicKeyEncoded;
         this.nonce = nonce;
+        this.salt = salt;
+        this.hashedPassword = hashedPassword;
     }
 
     @NotNull
@@ -29,7 +33,11 @@ public class ClientboundHelloPacket extends Packet<ClientPacketListener> {
         stream.readFully(key);
         byte[] nonce = new byte[Constant.TWO_NONCE_LENGTH];
         stream.readFully(nonce);
-        return new ClientboundHelloPacket(key, nonce);
+        byte[] salt = new byte[Constant.PASSWORD_SALT_LENGTH];
+        stream.readFully(salt);
+        byte[] hashedPassword = new byte[Constant.DIGEST_LENGTH];
+        stream.readFully(hashedPassword);
+        return new ClientboundHelloPacket(key, nonce, salt, hashedPassword);
     }
 
     @Override
@@ -37,6 +45,8 @@ public class ClientboundHelloPacket extends Packet<ClientPacketListener> {
         stream.writeInt(publicKeyEncoded.length);
         stream.write(publicKeyEncoded);
         stream.write(nonce);
+        stream.write(salt);
+        stream.write(hashedPassword);
     }
 
     @Override
@@ -54,6 +64,8 @@ public class ClientboundHelloPacket extends Packet<ClientPacketListener> {
         return "ClientboundHelloPacket{" +
                 "publicKeyEncoded=" + CryptoHelper.toHexString(publicKeyEncoded) +
                 ", nonce=" + CryptoHelper.toHexString(nonce) +
+                ", salt=" + CryptoHelper.toHexString(salt) +
+                ", hashedPassword=" + CryptoHelper.toHexString(hashedPassword) +
                 '}';
     }
 }

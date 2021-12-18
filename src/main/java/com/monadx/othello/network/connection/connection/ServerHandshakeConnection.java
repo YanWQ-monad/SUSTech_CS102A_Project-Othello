@@ -5,8 +5,11 @@ import java.security.*;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.KeyAgreement;
+
+import com.monadx.othello.network.packet.handshake.ServerboundPasswordVerifyPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +32,10 @@ public class ServerHandshakeConnection {
         this.stream = stream;
     }
 
-    public boolean runUntilComplete() throws IOException, NoSuchAlgorithmException {
+    public boolean runUntilComplete(@NotNull String password) throws IOException, NoSuchAlgorithmException {
         KeyAgreement keyAgree = KeyAgreement.getInstance(Constant.KEY_AGREEMENT_ALGORITHM);
         byte[] secret = new byte[Constant.SECRET_KEY_LENGTH];
+        byte[] salt = new byte[Constant.PASSWORD_SALT_LENGTH];
 
         ServerHandshakePacketHandler handler = new ServerHandshakePacketHandler(new ServerPacketListener() {
             @Override
@@ -42,6 +46,7 @@ public class ServerHandshakeConnection {
                     byte[] nonce = new byte[Constant.TWO_NONCE_LENGTH];
                     SecureRandom random = new SecureRandom();
                     random.nextBytes(nonce);
+                    random.nextBytes(salt);
 
                     KeyFactory serverKeyFactory = KeyFactory.getInstance(Constant.KEY_PAIR_ALGORITHM);
                     X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(packet.publicKeyEncoded);
@@ -53,29 +58,47 @@ public class ServerHandshakeConnection {
                     keyGenerator.initialize(dhParamFromClientPublicKey);
                     KeyPair pair = keyGenerator.generateKeyPair();
 
-                    keyAgree.init(pair.getPrivate());
                     byte[] publicKeyEncoded = pair.getPublic().getEncoded();
 
-                    stream.send(new ClientboundHelloPacket(publicKeyEncoded, nonce));
-
+                    keyAgree.init(pair.getPrivate());
                     keyAgree.doPhase(clientPublicKey, true);
+                    keyAgree.generateSecret(secret, 0);
 
                     stage = Stage.AGREED;
+
+                    byte[] serverHashedPassword = CryptoHelper.hashPassword(password, secret, packet.salt);
+                    stream.send(new ClientboundHelloPacket(publicKeyEncoded, nonce, salt, serverHashedPassword));
 
                     for (int i = 0; i < nonce.length; i++)
                         nonce[i] ^= packet.nonce[i];
 
-                    keyAgree.generateSecret(secret, 0);
                     Cipher encryptCipher = CryptoHelper.createCipher(Cipher.ENCRYPT_MODE, secret, nonce, Constant.NONCE_LENGTH);
                     Cipher decryptCipher = CryptoHelper.createCipher(Cipher.DECRYPT_MODE, secret, nonce, 0);
                     stream = CryptoHelper.encryptPacketStream(stream, encryptCipher, decryptCipher);
 
                     LOGGER.info("The connection is now encrypted");
 
-                    stage = Stage.FINISHED;
+                    stage = Stage.ENCRYPT;
                 } catch (GeneralSecurityException e) {
                     stage = Stage.ERROR;
                     LOGGER.error("Error while handling client hello packet", e);
+                }
+            }
+
+            @Override
+            public void handlePasswordVerify(@NotNull ServerboundPasswordVerifyPacket packet) {
+                try {
+                    byte[] clientHashedPassword = CryptoHelper.hashPassword(password, secret, salt);
+                    if (!Arrays.equals(clientHashedPassword, packet.hashedPassword)) {
+                        LOGGER.warn("Client hashed password does not match: got {}, expected {}",
+                                CryptoHelper.toHexString(packet.hashedPassword), CryptoHelper.toHexString(clientHashedPassword));
+                        stage = Stage.ERROR;
+                    } else {
+                        stage = Stage.FINISHED;
+                    }
+                } catch (GeneralSecurityException e) {
+                    stage = Stage.ERROR;
+                    LOGGER.error("Error while handling password verify packet", e);
                 }
             }
         });

@@ -15,10 +15,12 @@ public class ServerboundHelloPacket extends Packet<ServerPacketListener> {
 
     @NotNull public final byte[] publicKeyEncoded;
     @NotNull public final byte[] nonce;
+    @NotNull public final byte[] salt;
 
-    public ServerboundHelloPacket(@NotNull byte[] publicKeyEncoded, @NotNull byte[] nonce) {
+    public ServerboundHelloPacket(@NotNull byte[] publicKeyEncoded, @NotNull byte[] nonce, @NotNull byte[] salt) {
         this.publicKeyEncoded = publicKeyEncoded;
         this.nonce = nonce;
+        this.salt = salt;
     }
 
     @NotNull
@@ -29,7 +31,9 @@ public class ServerboundHelloPacket extends Packet<ServerPacketListener> {
         stream.readFully(key);
         byte[] nonce = new byte[Constant.TWO_NONCE_LENGTH];
         stream.readFully(nonce);
-        return new ServerboundHelloPacket(key, nonce);
+        byte[] salt = new byte[Constant.PASSWORD_SALT_LENGTH];
+        stream.readFully(salt);
+        return new ServerboundHelloPacket(key, nonce, salt);
     }
 
     @Override
@@ -37,6 +41,7 @@ public class ServerboundHelloPacket extends Packet<ServerPacketListener> {
         stream.writeInt(publicKeyEncoded.length);
         stream.write(publicKeyEncoded);
         stream.write(nonce);
+        stream.write(salt);
     }
 
     @Override
@@ -54,6 +59,7 @@ public class ServerboundHelloPacket extends Packet<ServerPacketListener> {
         return "ServerboundHelloPacket{" +
                 "publicKeyEncoded=" + CryptoHelper.toHexString(publicKeyEncoded) +
                 ", nonce=" + CryptoHelper.toHexString(nonce) +
+                ", salt=" + CryptoHelper.toHexString(salt) +
                 '}';
     }
 }

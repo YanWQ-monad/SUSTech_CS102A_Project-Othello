@@ -1,6 +1,8 @@
 package com.monadx.othello.network.utils;
 
 import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -31,6 +33,16 @@ public class CryptoHelper {
         CipherInputStream input = new CipherInputStream(stream.getChannel().input(), decryptCipher);
         CipherOutputStream output = new CipherOutputStream(stream.getChannel().output(), encryptCipher);
         return new PacketStream(new Channel(input, output, stream.getChannel().socket()));
+    }
+
+    @NotNull
+    public static byte[] hashPassword(@NotNull String password, @NotNull byte[] key, @NotNull byte[] salt) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance(Constant.DIGEST_ALGORITHM);
+        byte[] passwordBytes = password.getBytes();
+        md.update(passwordBytes);
+        md.update(key, Constant.AES_KEY_LENGTH, Constant.REMAINING_SECRET_LENGTH);
+        md.update(salt);
+        return md.digest();
     }
 
     private static void byteToHex(byte b, @NotNull StringBuffer buf) {

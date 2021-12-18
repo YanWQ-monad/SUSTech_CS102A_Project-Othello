@@ -22,6 +22,11 @@ public class Constant {
     public static final int IV_LENGTH = 128 / 8;
     public static final int AES_KEY_LENGTH = 32;
 
+    public static final String DIGEST_ALGORITHM = "SHA3-256";
+    public static final int DIGEST_LENGTH = 32;
+    public static final int PASSWORD_SALT_LENGTH = 16;
+    public static final int REMAINING_SECRET_LENGTH = SECRET_KEY_LENGTH - AES_KEY_LENGTH;
+
     public static InetAddress getAddressByNameOrNull(String name) {
         try {
             return InetAddress.getByName(name);
