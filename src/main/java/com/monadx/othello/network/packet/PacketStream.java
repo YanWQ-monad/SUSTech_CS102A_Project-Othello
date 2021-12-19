@@ -27,6 +27,7 @@ public class PacketStream implements Closeable {
 
     private void send(@NotNull RawPacket packet) throws IOException {
         packet.writeTo(out);
+        out.flush();
     }
 
     public <T extends Packet<L>, L extends PacketListener> void send(@NotNull T packet) throws IOException {

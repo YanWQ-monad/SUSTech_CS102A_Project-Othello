@@ -39,7 +39,7 @@ class ServerListeningController(appState: AppState, val serverName: String, val 
         thread(isDaemon = true) {
             while (!server.isClosed) {
                 try {
-                    val channel = server.waitForConnection() ?: continue
+                    val channel = server.waitForConnection()?.withCache() ?: continue
                     val packetStream = PacketStream(channel)
                     val connection = ServerHandshakeConnection(packetStream)
                     val isSuccess = connection.runUntilComplete("")
