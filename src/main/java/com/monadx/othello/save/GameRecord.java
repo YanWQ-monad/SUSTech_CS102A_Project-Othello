@@ -20,6 +20,15 @@ public record GameRecord(
 ) {
     @NotNull
     @Contract("_ -> new")
+    public static GameRecord fromGame(@NotNull Game game) {
+        return new GameRecord(
+                game.getStepList(),
+                game.getBoard().hashCode(),
+                game.getCurrentPlayer());
+    }
+
+    @NotNull
+    @Contract("_ -> new")
     public static GameRecord deserialize(@NotNull DataInput in) throws IOException {
         int stepListSize = in.readByte();
         List<Step> stepList = new ArrayList<>(stepListSize);

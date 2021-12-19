@@ -15,10 +15,7 @@ public class RecordSaver {
     }
 
     public void save(@NotNull Game game) throws SaveException {
-        GameRecord record = new GameRecord(
-                game.getStepList(),
-                game.getBoard().hashCode(),
-                game.getCurrentPlayer());
+        GameRecord record = GameRecord.fromGame(game);
 
         try {
             DataOutputStream stream = new DataOutputStream(new FileOutputStream(fileName));
