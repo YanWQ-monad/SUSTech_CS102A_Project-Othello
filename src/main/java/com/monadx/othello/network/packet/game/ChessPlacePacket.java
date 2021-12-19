@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import com.monadx.othello.chess.ChessColor;
+import com.monadx.othello.chess.Step;
 import com.monadx.othello.network.packet.Packet;
 
 public class ChessPlacePacket extends Packet<GamePacketListener> {
@@ -26,20 +27,16 @@ public class ChessPlacePacket extends Packet<GamePacketListener> {
 
     @Override
     public void serialize(@NotNull DataOutputStream stream) throws IOException {
-        stream.writeByte(x);
-        stream.writeByte(y);
-        color.serialize(stream);
+        new Step(color, x, y).serialize(stream);
         stream.writeInt(boardHash);
     }
 
     @NotNull
     @Contract("_ -> new")
     public static ChessPlacePacket deserialize(@NotNull DataInputStream stream) throws IOException {
-        int x = stream.readByte();
-        int y = stream.readByte();
-        ChessColor color = ChessColor.deserialize(stream);
+        Step step = Step.deserialize(stream);
         int boardHash = stream.readInt();
-        return new ChessPlacePacket(x, y, color, boardHash);
+        return new ChessPlacePacket(step.x(), step.y(), step.player(), boardHash);
     }
 
     @Override

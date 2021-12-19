@@ -7,21 +7,38 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public record Step(@NotNull ChessColor player, int x, int y) {
+    public Step {
+        if (player == ChessColor.EMPTY) {
+            throw new IllegalArgumentException("player must not be EMPTY");
+        }
+        if (!Utils.coordinateInside(x, y)) {
+            throw new IllegalArgumentException("x, y must be inside the board");
+        }
+    }
+
     @NotNull
     @Contract("_ -> new")
     public static Step deserialize(@NotNull DataInput in) throws IOException {
-        ChessColor player = ChessColor.deserialize(in);
-        int x = in.readByte();
-        int y = in.readByte();
-        if (!Utils.coordinateInside(x, y)) {
-            throw new IOException("Invalid coordinate: " + x + "," + y);
-        }
+        byte encoded = in.readByte();
+
+        Coordinate coordinate = Coordinate.decode(encoded);
+        int x = coordinate.x();
+        int y = coordinate.y();
+
+        int playerBit = (encoded >> 6) & 1;
+        ChessColor player = switch (playerBit) {
+            case 0 -> ChessColor.BLACK;
+            case 1 -> ChessColor.WHITE;
+            default -> throw new RuntimeException("Unreachable");
+        };
+
         return new Step(player, x, y);
     }
 
     public void serialize(@NotNull DataOutput out) throws IOException {
-        player.serialize(out);
-        out.writeByte(x);
-        out.writeByte(y);
+        byte encoded = Coordinate.of(x, y).encode();
+        int playerBit = player == ChessColor.BLACK ? 0 : 1;
+        encoded |= (playerBit << 6);
+        out.writeByte(encoded);
     }
 }

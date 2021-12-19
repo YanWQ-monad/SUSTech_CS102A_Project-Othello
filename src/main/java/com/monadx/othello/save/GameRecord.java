@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.monadx.othello.chess.ChessColor;
+import com.monadx.othello.chess.Game;
 import com.monadx.othello.chess.Step;
 
 public record GameRecord(
@@ -20,7 +21,7 @@ public record GameRecord(
     @NotNull
     @Contract("_ -> new")
     public static GameRecord deserialize(@NotNull DataInput in) throws IOException {
-        int stepListSize = in.readChar();
+        int stepListSize = in.readByte();
         List<Step> stepList = new ArrayList<>(stepListSize);
 
         for (int i = 0; i < stepListSize; i++) {
@@ -34,7 +35,7 @@ public record GameRecord(
     }
 
     public void serialize(@NotNull DataOutput out) throws IOException {
-        out.writeChar(stepList.size());
+        out.writeByte(stepList.size());
 
         for (Step step : stepList) {
             step.serialize(out);

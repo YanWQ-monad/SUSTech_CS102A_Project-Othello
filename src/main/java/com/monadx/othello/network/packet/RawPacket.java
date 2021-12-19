@@ -5,10 +5,12 @@ import java.util.zip.CRC32;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import com.monadx.othello.network.utils.VarInt;
+
 public record RawPacket(
     int packetId,
     int length,
-    long checksum,
+    int checksum,
     byte[] data
 ) {
     @NotNull
@@ -29,9 +31,9 @@ public record RawPacket(
     @NotNull
     @Contract("_ -> new")
     public static RawPacket readFrom(@NotNull DataInput stream) throws IOException {
-        int packetId = stream.readInt();
-        int length = stream.readInt();
-        long checksum = stream.readLong();
+        int packetId = stream.readByte();
+        int length = VarInt.readVarInt(stream);
+        int checksum = stream.readInt();
         byte[] data = new byte[length];
         stream.readFully(data);
 
@@ -39,9 +41,9 @@ public record RawPacket(
     }
 
     public void writeTo(@NotNull DataOutput stream) throws IOException {
-        stream.writeInt(packetId);
-        stream.writeInt(length);
-        stream.writeLong(checksum);
+        stream.writeByte(packetId);
+        VarInt.writeVarInt(stream, length);
+        stream.writeInt(checksum);
         stream.write(data);
     }
 
@@ -49,9 +51,10 @@ public record RawPacket(
         return calculateChecksum(data) == checksum;
     }
 
-    private static long calculateChecksum(@NotNull byte[] data) {
+    private static int calculateChecksum(@NotNull byte[] data) {
         CRC32 crc = new CRC32();
         crc.update(data);
-        return crc.getValue();
+        long value = crc.getValue();
+        return (int)((value >>> 32) ^ value);
     }
 }
