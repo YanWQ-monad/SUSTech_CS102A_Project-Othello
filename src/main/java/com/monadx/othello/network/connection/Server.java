@@ -34,7 +34,7 @@ public class Server implements Closeable {
             throw e;
         }
 
-        LOGGER.info("Connection accepted from {}", socket.getInetAddress());
+        LOGGER.info("Connection accepted from {}", socket.getInetAddress().getHostAddress());
         return new Channel(socket.getInputStream(), socket.getOutputStream(), socket);
     }
 
