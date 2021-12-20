@@ -20,7 +20,7 @@ import com.monadx.othello.ui.controller.Controller
 import com.monadx.othello.ui.controller.MenuController
 import com.monadx.othello.ui.controller.OnlineController
 
-class ServerListeningController(appState: AppState, val serverName: String, val chessColor: ChessColor) : Controller(appState) {
+class ServerListeningController(appState: AppState, val serverName: String, val chessColor: ChessColor, password: String) : Controller(appState) {
     companion object {
         private val LOGGER = LogManager.getLogger(ServerListeningController::class.java)
     }
@@ -32,7 +32,7 @@ class ServerListeningController(appState: AppState, val serverName: String, val 
 
     init {
         val serverPort = Random.nextInt(10000, 40000)
-        val message = MulticastMessage(serverPort, serverName, chessColor)
+        val message = MulticastMessage(serverPort, serverName, chessColor, password.isNotEmpty())
         multicastServer = MulticastServer(Constant.MULTICAST_ADDRESS, Constant.MULTICAST_PORT, message)
         server = Server(serverPort)
 
@@ -42,7 +42,7 @@ class ServerListeningController(appState: AppState, val serverName: String, val 
                     val channel = server.waitForConnection()?.withCache() ?: continue
                     val packetStream = PacketStream(channel)
                     val connection = ServerHandshakeConnection(packetStream)
-                    val isSuccess = connection.runUntilComplete("")
+                    val isSuccess = connection.runUntilComplete(password)
                     if (!isSuccess) {
                         LOGGER.error("Server handshake failed")
                         continue

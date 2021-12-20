@@ -11,6 +11,7 @@ import com.monadx.othello.ui.controller.MenuController
 
 class ServerConfigController(appState: AppState) : Controller(appState) {
     val serverName = mutableStateOf("")
+    val password = mutableStateOf("")
     val color = mutableStateOf(ChessColor.BLACK)
 
     @Composable
@@ -18,10 +19,12 @@ class ServerConfigController(appState: AppState) : Controller(appState) {
         ServerConfigDialog(
             serverName.value,
             onServerNameChange = { newName -> serverName.value = newName },
+            password.value,
+            onPasswordChange = { newPassword -> password.value = newPassword },
             color = color.value,
             onColorChange = { newColor -> color.value = newColor },
             onConfirm = {
-                (appState.getController() as MenuController).setDialog(ServerListeningController(appState, serverName.value, color.value))
+                (appState.getController() as MenuController).setDialog(ServerListeningController(appState, serverName.value, color.value, password.value))
             },
             onCloseRequest = { (appState.getController() as MenuController).closeDialog() }
         )

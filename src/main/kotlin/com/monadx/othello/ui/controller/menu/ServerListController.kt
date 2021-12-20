@@ -38,14 +38,14 @@ class ServerListController(appState: AppState) : Controller(appState) {
     override fun view() {
         ServerListDialog(
             serverList,
-            onChoose = { packet ->
+            onChoose = { packet, password ->
                 LOGGER.info("Connecting to ${packet.message.serverName}(${packet.sender.hostAddress})")
 
                 try {
                     val channel = Channel.connect(packet.sender, packet.message.port).withCache()
                     val packetStream = PacketStream(channel)
                     val connection = ClientHandshakeConnection(packetStream)
-                    val isSuccess = connection.runUntilComplete("")
+                    val isSuccess = connection.runUntilComplete(password)
                     if (!isSuccess) {
                         LOGGER.error("Server handshake failed")
                         packetStream.close()

@@ -10,16 +10,17 @@ import com.monadx.othello.save.NullHelper;
 public record MulticastMessage(
         int port,
         @NotNull String serverName,
-        @Nullable ChessColor serverColor
+        @Nullable ChessColor serverColor,
+        boolean isPasswordRequired
 ) {
     static final long MAGIC_HEADER = 0x9784757560932L;
 
     @Nullable
-    public static MulticastMessage createWithCheck(int port, @NotNull String serverName, @Nullable ChessColor serverColor) {
+    public static MulticastMessage createWithCheck(int port, @NotNull String serverName, @Nullable ChessColor serverColor, boolean isPasswordRequired) {
         if (port < 0 || port > 65535) {
             return null;
         }
-        return new MulticastMessage(port, serverName, serverColor);
+        return new MulticastMessage(port, serverName, serverColor, isPasswordRequired);
     }
 
     @NotNull
@@ -32,6 +33,7 @@ public record MulticastMessage(
             stream.writeInt(port);
             stream.writeUTF(serverName);
             NullHelper.serializeNullable(stream, serverColor, o -> serverColor.serialize(o));
+            stream.writeByte(isPasswordRequired ? 1 : 0);
 
             stream.close();
         } catch (IOException e) {
@@ -55,8 +57,9 @@ public record MulticastMessage(
             int port = stream.readInt();
             String serverName = stream.readUTF();
             ChessColor serverColor = NullHelper.deserializeNullable(stream, ChessColor::deserialize);
+            boolean isPasswordRequired = stream.readByte() == 1;
 
-            return MulticastMessage.createWithCheck(port, serverName, serverColor);
+            return MulticastMessage.createWithCheck(port, serverName, serverColor, isPasswordRequired);
         } catch (IOException e) {
             return null;
         }
