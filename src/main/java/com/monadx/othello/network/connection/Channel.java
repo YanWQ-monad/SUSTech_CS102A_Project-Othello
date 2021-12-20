@@ -6,7 +6,7 @@ import java.net.Socket;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public record Channel(@NotNull InputStream input, @NotNull OutputStream output, @NotNull Socket socket) implements Closeable {
+public record Channel(@NotNull InputStream input, @NotNull OutputStream output, @NotNull Closeable socket) implements Closeable {
     @NotNull
     @Contract("_, _ -> new")
     public static Channel connect(@NotNull InetAddress address, int port) throws IOException {
