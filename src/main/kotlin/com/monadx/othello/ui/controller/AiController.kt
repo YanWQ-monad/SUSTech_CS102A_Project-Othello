@@ -57,8 +57,8 @@ class AiController(appState: AppState, val playerColor: ChessColor, val difficul
                 val move = result.best
 
                 val timePassBy = System.currentTimeMillis() - oldTime
-                if (timePassBy < 1000) {
-                    Thread.sleep(1000 - timePassBy)
+                if (timePassBy < 500) {
+                    Thread.sleep(500 - timePassBy)
                 }
 
                 synchronized(game) {
