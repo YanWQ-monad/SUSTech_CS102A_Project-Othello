@@ -14,12 +14,6 @@ public record MulticastMessage(
 ) {
     static final long MAGIC_HEADER = 0x9784757560932L;
 
-    public MulticastMessage(int port, @NotNull String serverName, @Nullable ChessColor serverColor) {
-        this.port = port;
-        this.serverName = serverName;
-        this.serverColor = serverColor;
-    }
-
     @Nullable
     public static MulticastMessage createWithCheck(int port, @NotNull String serverName, @Nullable ChessColor serverColor) {
         if (port < 0 || port > 65535) {
@@ -66,43 +60,5 @@ public record MulticastMessage(
         } catch (IOException e) {
             return null;
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        MulticastMessage other = (MulticastMessage) obj;
-        return port == other.port &&
-                serverName.equals(other.serverName) &&
-                serverColor == other.serverColor;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    @NotNull
-    public String getServerName() {
-        return serverName;
-    }
-
-    @Nullable
-    public ChessColor getServerColor() {
-        return serverColor;
-    }
-
-    @Override
-    public String toString() {
-        return "MulticastMessage{" +
-                "port=" + port +
-                ", serverName='" + serverName + '\'' +
-                ", serverColor=" + serverColor +
-                '}';
     }
 }
