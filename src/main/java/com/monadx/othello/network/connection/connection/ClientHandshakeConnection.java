@@ -102,7 +102,12 @@ public class ClientHandshakeConnection {
         return stream;
     }
 
-    private enum Stage {
+    @NotNull
+    Stage getStage() {
+        return stage;
+    }
+
+    enum Stage {
         START,
         AGREED,
         ENCRYPT,

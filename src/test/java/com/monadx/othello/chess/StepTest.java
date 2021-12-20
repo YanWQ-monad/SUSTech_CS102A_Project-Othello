@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.monadx.othello.TestHelper;
+import com.monadx.othello.testutils.TestHelper;
 
 class StepTest {
     private static final Logger LOGGER = LogManager.getLogger(StepTest.class);

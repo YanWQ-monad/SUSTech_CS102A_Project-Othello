@@ -1,6 +1,8 @@
 package com.monadx.othello.network.packet;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.zip.CRC32;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -56,5 +58,20 @@ public record RawPacket(
         crc.update(data);
         long value = crc.getValue();
         return (int)((value >>> 32) ^ value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RawPacket rawPacket = (RawPacket) o;
+        return packetId == rawPacket.packetId && length == rawPacket.length && checksum == rawPacket.checksum && Arrays.equals(data, rawPacket.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(packetId, length, checksum);
+        result = 31 * result + Arrays.hashCode(data);
+        return result;
     }
 }

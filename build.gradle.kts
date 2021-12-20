@@ -33,6 +33,9 @@ sourceSets.main {
 
 tasks.test {
     useJUnitPlatform()
+
+    // to access private field of `java.io.PipedInputStream` in `ThreadPipedInputStream`
+    jvmArgs("--add-opens", "java.base/java.io=ALL-UNNAMED")
 }
 
 tasks.withType<KotlinCompile>() {

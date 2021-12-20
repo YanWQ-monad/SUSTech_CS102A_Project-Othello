@@ -1,4 +1,4 @@
-package com.monadx.othello;
+package com.monadx.othello.testutils;
 
 import java.io.*;
 import org.jetbrains.annotations.NotNull;

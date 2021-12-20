@@ -3,7 +3,7 @@ package com.monadx.othello.save;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.monadx.othello.TestHelper;
+import com.monadx.othello.testutils.TestHelper;
 import com.monadx.othello.chess.Coordinate;
 import com.monadx.othello.chess.Game;
 
