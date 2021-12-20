@@ -3,15 +3,13 @@ package com.monadx.othello.ui.controller
 import androidx.compose.runtime.Composable
 import org.apache.logging.log4j.LogManager
 
-import com.monadx.othello.chess.Board
-import com.monadx.othello.chess.ChessColor
-import com.monadx.othello.chess.Game
-import com.monadx.othello.chess.Snapshot
+import com.monadx.othello.chess.*
 import com.monadx.othello.chess.Utils.POSITION_LIST
 import com.monadx.othello.save.FileChooser
 import com.monadx.othello.save.RecordLoader
 import com.monadx.othello.save.SaveException
 import com.monadx.othello.ui.AppState
+import com.monadx.othello.ui.components.board.CellState
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.PlayerState
 import com.monadx.othello.ui.components.board.ReplayBoard
@@ -25,6 +23,8 @@ class ReplayController(appState: AppState) : Controller(appState) {
 
     private var snapshotListToLoad: MutableList<Snapshot>? = null
     val snapshotList by lazy { snapshotListToLoad!! }
+    private var stepListToLoad: MutableList<Step>? = null
+    val stepList by lazy { stepListToLoad!! }
 
     var chosenSnapshot: Snapshot? = null
     val board: Board get() = chosenSnapshot!!.board
@@ -40,6 +40,7 @@ class ReplayController(appState: AppState) : Controller(appState) {
             try {
                 val game = loader.load()
                 snapshotListToLoad = game.snapshotList
+                stepListToLoad = game.stepList
                 snapshotListToLoad!!.add(Snapshot(game.board, game.currentPlayer, game.status))
 
                 chosenSnapshot = snapshotList.first()
@@ -72,11 +73,30 @@ class ReplayController(appState: AppState) : Controller(appState) {
     }
 
     fun syncAll() {
+        val index = snapshotList.indexOf(chosenSnapshot)
+
         POSITION_LIST.forEach { coordinate ->
             val (x, y) = coordinate
+
+            state.board.at(x, y).state.value = CellState.None
             currentPlayer?.let {
-                state.board.at(x, y).canMove.value = board.checkPlaceable(coordinate, it)
+                if (board.checkPlaceable(coordinate, it)) {
+                    state.board.at(x, y).state.value = CellState.CanPlace
+                }
             }
+
+            val lastBoard = snapshotList.getOrNull(index - 1)?.board
+            val lastStep = stepList.getOrNull(index - 1)
+
+            if (lastBoard != null && board.board[x][y] != ChessColor.EMPTY) {
+                if ((lastStep?.x == x) && (lastStep.y == y)) {
+                    state.board.at(x, y).state.value = CellState.LastPlaced
+                }
+                else if (board.board[x][y] != lastBoard.board[x][y]) {
+                    state.board.at(x, y).state.value = CellState.LastFlipped
+                }
+            }
+
             if (state.board.at(x, y).color.value != board.board[x][y]) {
                 state.board.at(x, y).color.value = board.board[x][y]
             }

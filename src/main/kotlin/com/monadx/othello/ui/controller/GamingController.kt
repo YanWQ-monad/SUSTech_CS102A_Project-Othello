@@ -2,12 +2,14 @@ package com.monadx.othello.ui.controller
 
 import com.monadx.othello.chess.ChessColor
 import com.monadx.othello.chess.Game
+import com.monadx.othello.chess.Snapshot
 import com.monadx.othello.chess.Utils.POSITION_LIST
 import com.monadx.othello.save.RecordLoader
 import com.monadx.othello.save.RecordSaver
 import com.monadx.othello.save.SaveException
 import com.monadx.othello.save.FileChooser
 import com.monadx.othello.ui.AppState
+import com.monadx.othello.ui.components.board.CellState
 import com.monadx.othello.ui.components.board.GameState
 import com.monadx.othello.ui.components.board.PlayerState
 
@@ -25,7 +27,7 @@ abstract class GamingController(appState: AppState): Controller(appState) {
     open fun syncAll() {
         syncBoardColor()
         syncStatus()
-        setBoardPlaceable()
+        setBoardCellState()
     }
 
     fun syncBoardColor() {
@@ -60,11 +62,23 @@ abstract class GamingController(appState: AppState): Controller(appState) {
         }
     }
 
-    fun setBoardPlaceable() {
+    fun setBoardCellState() {
         POSITION_LIST.forEach { coordinate ->
             val (x, y) = coordinate
+            val lastBoard = game.snapshotList.lastOrNull()?.board
+            val lastStep = game.stepList.lastOrNull()
 
-            state.board.at(x, y).canMove.value = game.checkPlaceable(coordinate)
+            state.board.at(x, y).state.value = CellState.None
+            if (game.checkPlaceable(coordinate)) {
+                state.board.at(x, y).state.value = CellState.CanPlace
+            } else if (lastBoard != null && game.board.board[x][y] != ChessColor.EMPTY) {
+                if ((lastStep?.x == x) && (lastStep.y == y)) {
+                    state.board.at(x, y).state.value = CellState.LastPlaced
+                }
+                else if (game.board.board[x][y] != lastBoard.board[x][y]) {
+                    state.board.at(x, y).state.value = CellState.LastFlipped
+                }
+            }
         }
     }
 
