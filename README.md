@@ -11,15 +11,15 @@
 | display the status of the game         | ✅ |
 | restart a game                         | ✅ |
 | **Task 2: Load and Save a Game**       | ✅ |
-| load an existing game<sup>[1]</sup>    | ✅ |
-| save the current game<sup>[1]</sup>    | ✅ |
+| load an existing game                  | ✅<sup>[1]</sup> |
+| save the current game                  | ✅<sup>[1]</sup> |
 | error check                            | ✅<sup>[2]</sup> |
 | **Task 3: Play the game**              | ✅ |
 | detect the winning status              | ✅ |
 | allow disks to be flipped              | ✅ |
 | cheat mode                             | ✅ |
 | **Task 4: Graphical User Interface**   | ✅ |
-| graphical user interface<sup>[3]</sup> | ✅ |
+| graphical user interface               | ✅<sup>[3]</sup> |
 
 <sub><sup>[1] Save to a binary file rather than a text file</sup></sub>  
 <sub><sup>[2] Error is checked but only printed to console</sup></sub>  
